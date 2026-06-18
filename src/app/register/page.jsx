@@ -1,0 +1,188 @@
+"use client";
+
+import { authClient } from "@/lib/auth-client";
+import { Check } from "@gravity-ui/icons";
+import {
+  Button,
+  Description,
+  FieldError,
+  Form,
+  Input,
+  Label,
+  TextField,
+} from "@heroui/react";
+import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { toast } from "react-toastify";
+
+export default function RegisterPage() {
+  const [role, setRole] = useState("user");
+  const [preview, setPreview] = useState(null);
+  const [file, setFile] = useState(null);
+  const router = useRouter()
+
+  const handleImage = (e) => {
+    const selectedFile = e.target.files[0];
+
+    if (selectedFile) {
+      setPreview(URL.createObjectURL(selectedFile));
+      setFile(selectedFile);
+    }
+  };
+
+  const uploadToImgBB = async (file) => {
+    const formData = new FormData();
+    formData.append("image", file);
+
+    const res = await fetch(
+      `https://api.imgbb.com/1/upload?key=${process.env.NEXT_PUBLIC_IMGBB_API_KEY}`,
+      {
+        method: "POST",
+        body: formData,
+      },
+    );
+
+    const data = await res.json();
+    return data.data.url;
+  };
+
+  const onSubmit = async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(e.currentTarget);
+    const userData = Object.fromEntries(formData.entries());
+
+    let imageUrl = "";
+    if (file) imageUrl = await uploadToImgBB(file);
+
+    const finalData = { ...userData, role, image: imageUrl };
+
+    console.log(finalData.role)
+
+    const { data, error } = await authClient.signUp.email({
+      email:finalData.email,
+      password:finalData.password,
+      name:finalData.name,
+      image:finalData.image,
+      role:finalData.role,
+      callbackURL: "/dashboard",
+    });
+    
+    if (error) {
+      toast.success("Register is Filed !")
+    }
+    if (data) {
+      toast.success("Register successfully")
+      router.push("/dashboard")
+    }
+    
+  };
+
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-gray-100 to-gray-200 dark:from-gray-900 dark:to-black p-4">
+      {/* CARD */}
+      <div className="w-full my-10 max-w-md bg-white dark:bg-gray-900 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-800 p-6">
+        {/* TITLE */}
+        <h1 className="text-2xl font-bold text-center mb-1">Create Account</h1>
+        <p className="text-sm text-gray-500 text-center mb-6">
+          Join our fitness platform
+        </p>
+
+        <Form className="flex flex-col gap-4" onSubmit={onSubmit}>
+          {/* NAME */}
+          <TextField name="name" isRequired>
+            <Label className="text-sm font-medium">Full Name</Label>
+            <Input placeholder="Enter your name" className="rounded-lg" />
+            <FieldError />
+          </TextField>
+
+          {/* EMAIL */}
+          <TextField name="email" type="email" isRequired>
+            <Label className="text-sm font-medium">Email</Label>
+            <Input placeholder="example@mail.com" className="rounded-lg" />
+            <FieldError />
+          </TextField>
+
+          {/* PASSWORD */}
+          <TextField name="password" type="password" isRequired>
+            <Label className="text-sm font-medium">Password</Label>
+            <Input placeholder="••••••••" className="rounded-lg" />
+            <Description>8+ chars, 1 uppercase, 1 number</Description>
+            <FieldError />
+          </TextField>
+
+          {/* IMAGE */}
+          <div className="flex flex-col gap-2">
+            <Label className="text-sm font-medium">Profile Image</Label>
+
+            <label className="flex items-center justify-between border rounded-lg px-3 py-2 cursor-pointer bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 transition">
+              <span className="text-gray-500 text-sm">
+                {preview ? "Image selected" : "Upload profile image"}
+              </span>
+              <span className="text-blue-500 text-sm font-medium">Browse</span>
+
+              <input
+                type="file"
+                name="image"
+                accept="image/*"
+                className="hidden"
+                onChange={handleImage}
+              />
+            </label>
+
+            {preview && (
+              <Image
+                src={preview}
+                width={10}
+                height={10}
+                alt="image"
+                className="w-20 h-20 object-cover rounded-full border mx-auto mt-2"
+              />
+            )}
+          </div>
+
+          {/* ROLE */}
+          <div className="flex flex-col gap-2">
+            <Label className="text-sm font-medium">Select Role</Label>
+
+            <div className="grid grid-cols-3 gap-2">
+              {["user", "trainer", "admin"].map((item) => (
+                <label
+                  key={item}
+                  className={`text-center py-2 rounded-lg border cursor-pointer text-sm transition ${
+                    role === item
+                      ? "bg-blue-500 text-white border-blue-500"
+                      : "bg-gray-50 dark:bg-gray-800"
+                  }`}
+                >
+                  <input
+                    type="radio"
+                    value={item}
+                    checked={role === item}
+                    onChange={(e) => setRole(e.target.value)}
+                    className="hidden"
+                  />
+                  {item}
+                </label>
+              ))}
+            </div>
+          </div>
+
+          {/* BUTTON */}
+          <Button
+            type="submit"
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg py-2 mt-2"
+          >
+            <Check />
+            Create Account
+          </Button>
+        </Form>
+        <Link href="/login" className="text-sm text-center block mt-3">
+          Already have account? <span className="text-green-500">Login</span>
+        </Link>
+      </div>
+    </div>
+  );
+}
