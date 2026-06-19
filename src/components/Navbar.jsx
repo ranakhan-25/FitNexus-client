@@ -8,6 +8,7 @@ import { useState } from "react";
 import ThemeToggle from "./shared/ThemeToggle";
 import { authClient } from "@/lib/auth-client";
 import Image from "next/image";
+import { toast } from "react-toastify";
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -23,6 +24,29 @@ export default function Navbar() {
     { name: "Classes", href: "/classes" },
     { name: "Community Forum", href: "/forum" },
   ];
+
+  const dashBoardLink = {
+    user: "/dashboard/user",
+    trainer: "/dashboard/trainer",
+    admin: "/dashboard/admin",
+  };
+
+  if (user?.email) {
+    links.push({
+      name: "Dashboard",
+      href: dashBoardLink[user?.role || "user"],
+    });
+  }
+
+  const handelLogOut = async () => {
+    const result = await authClient.signOut();
+    if (result) {
+      toast("LogOut Successfully")
+    }
+    if (!result) {
+      toast("LogOut is Filed !")
+    }
+  }
 
   return (
     <header className="sticky top-0 z-50 backdrop-blur-md border-b border-gray-200 dark:border-gray-800 bg-white/70 dark:bg-black/60">
@@ -77,7 +101,7 @@ export default function Navbar() {
             
 
             {
-              user ? <button className="px-4 py-2 rounded-lg bg-green-500 text-white hover:scale-105 transition">LogOut</button> : <Link
+              user ? <button className="px-4 py-2 rounded-lg bg-green-500 text-white hover:scale-105 transition"  onClick={handelLogOut}>LogOut</button> : <Link
               href="/register"
               className="px-4 py-2 rounded-lg bg-green-500 text-white hover:scale-105 transition"
             >
@@ -136,7 +160,7 @@ export default function Navbar() {
               }
 
               {
-                user ? <button className="bg-green-500 text-white rounded-lg py-2 text-center">SignOut</button> : <Link
+                user ? <button onClick={handelLogOut} className="bg-green-500 text-white rounded-lg py-2 text-center">SignOut</button> : <Link
                 href="/register"
                 className="bg-green-500 text-white rounded-lg py-2 text-center"
               >

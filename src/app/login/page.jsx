@@ -28,21 +28,21 @@ export default function LoginPage() {
     const { data, error } = await authClient.signIn.email({
       email: userData.email,
       password: userData.password,
-      callbackURL: "/dashboard",
+      callbackURL: "/",
     });
+
     setLoading(false);
+
     if (error) {
       return toast("Sign In is not successfully");
     }
-
-    router.push("/dashboard");
   };
 
   // 🌐 Google login handler
   const handleGoogleLogin = async () => {
-      const data = await authClient.signIn.social({
-        provider: "google",
-      });
+    const data = await authClient.signIn.social({
+      provider: "google",
+    });
   };
 
   return (
@@ -57,14 +57,41 @@ export default function LoginPage() {
 
         <Form className="flex flex-col gap-4" onSubmit={onSubmit}>
           {/* EMAIL */}
-          <TextField name="email" type="email" isRequired>
+          <TextField
+            name="email"
+            type="email"
+            isRequired
+            validate={(value) => {
+              if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(value)) {
+                return "Please enter a valid email address";
+              }
+              return null;
+            }}
+          >
             <Label>Email</Label>
             <Input placeholder="example@mail.com" />
             <FieldError />
           </TextField>
 
           {/* PASSWORD */}
-          <TextField name="password" type="password" isRequired>
+          <TextField
+            name="password"
+            type="password"
+            isRequired
+            minLength={8}
+            validate={(value) => {
+              if (value.length < 8) {
+                return "Password must be at least 8 characters";
+              }
+              if (!/[A-Z]/.test(value)) {
+                return "Password must contain at least one uppercase letter";
+              }
+              if (!/[0-9]/.test(value)) {
+                return "Password must contain at least one number";
+              }
+              return null;
+            }}
+          >
             <Label>Password</Label>
             <Input placeholder="••••••••" />
             <FieldError />

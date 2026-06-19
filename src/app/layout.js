@@ -1,9 +1,7 @@
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./Providers";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-import { ToastContainer } from "react-toastify";
+import LayoutWrapper from "@/components/service/LayoutWrapper";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -17,6 +15,7 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
+
   return (
     <html lang="en" suppressHydrationWarning className={`${inter.variable}`}>
       <body
@@ -24,10 +23,7 @@ export default function RootLayout({ children }) {
         className="font-sans min-h-screen antialiased"
       >
         <Providers>
-          <Navbar />
-          {children}
-          <Footer />
-           <ToastContainer />
+            <LayoutWrapper>{children}</LayoutWrapper>
         </Providers>
       </body>
     </html>

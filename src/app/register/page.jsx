@@ -21,7 +21,7 @@ export default function RegisterPage() {
   const [role, setRole] = useState("user");
   const [preview, setPreview] = useState(null);
   const [file, setFile] = useState(null);
-  const router = useRouter()
+  const router = useRouter();
 
   const handleImage = (e) => {
     const selectedFile = e.target.files[0];
@@ -59,25 +59,23 @@ export default function RegisterPage() {
 
     const finalData = { ...userData, role, image: imageUrl };
 
-    console.log(finalData.role)
 
     const { data, error } = await authClient.signUp.email({
-      email:finalData.email,
-      password:finalData.password,
-      name:finalData.name,
-      image:finalData.image,
-      role:finalData.role,
-      callbackURL: "/dashboard",
+      email: finalData.email,
+      password: finalData.password,
+      name: finalData.name,
+      image: finalData.image,
+      role: finalData.role,
+      callbackURL: `/`,
     });
-    
+
     if (error) {
-      toast.success("Register is Filed !")
+      toast.success("Register is Filed !");
     }
     if (data) {
-      toast.success("Register successfully")
-      router.push("/dashboard")
+      toast.success("Register successfully");
+      router.push(`/`);
     }
-    
   };
 
   return (
@@ -92,21 +90,48 @@ export default function RegisterPage() {
 
         <Form className="flex flex-col gap-4" onSubmit={onSubmit}>
           {/* NAME */}
-          <TextField name="name" isRequired>
+          <TextField name="name" isRequired minLength={3}>
             <Label className="text-sm font-medium">Full Name</Label>
             <Input placeholder="Enter your name" className="rounded-lg" />
             <FieldError />
           </TextField>
 
           {/* EMAIL */}
-          <TextField name="email" type="email" isRequired>
+          <TextField
+            name="email"
+            type="email"
+            isRequired
+            validate={(value) => {
+              if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(value)) {
+                return "Please enter a valid email address";
+              }
+              return null;
+            }}
+          >
             <Label className="text-sm font-medium">Email</Label>
             <Input placeholder="example@mail.com" className="rounded-lg" />
             <FieldError />
           </TextField>
 
           {/* PASSWORD */}
-          <TextField name="password" type="password" isRequired>
+          <TextField
+            name="password"
+            type="password"
+            isRequired
+            minLength={8}
+            validate={(value) => {
+              if (value.length < 8) {
+                return "Password must be at least 8 characters";
+              }
+              if (!/[A-Z]/.test(value)) {
+                return "Password must contain at least one uppercase letter";
+              }
+              if (!/[0-9]/.test(value)) {
+                return "Password must contain at least one number";
+              }
+              return null;
+            }}
+          >
             <Label className="text-sm font-medium">Password</Label>
             <Input placeholder="••••••••" className="rounded-lg" />
             <Description>8+ chars, 1 uppercase, 1 number</Description>
