@@ -1,18 +1,18 @@
 "use client";
 
-import { postClasses } from "@/components/api/classes";
+import { getToken } from "@/components/service/getToken";
 import { authClient } from "@/lib/auth-client";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 const AddClassPage = () => {
-  const { data: session, isPending } = authClient.useSession();
+  const { data: session } = authClient.useSession();
   const user = session?.user;
 
   const [formData, setFormData] = useState({
-    trainerId: user?.id,
-    trainerName: user?.name,
+    trainerId: "",
+    trainerName: "",
     className: "",
     category: "",
     difficulty: "",
@@ -21,114 +21,88 @@ const AddClassPage = () => {
     price: "",
     description: "",
     image: "",
-    status: "pending",
   });
 
   const [file, setFile] = useState(null);
   const [preview, setPreview] = useState(null);
-
   const [loading, setLoading] = useState(false);
 
-  // =========================
-  // INPUT CHANGE
-  // =========================
+  useEffect(() => {
+    if (user) {
+      setFormData((prev) => ({
+        ...prev,
+        trainerId: user.id,
+        trainerName: user.name,
+      }));
+    }
+  }, [user]);
+
   const handleChange = (e) => {
-    const { name, value } = e.target;
-
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // =========================
-  // IMAGE HANDLER
-  // =========================
   const handleImage = (e) => {
-    const selectedFile = e.target.files[0];
+    const file = e.target.files[0];
+    if (!file) return;
 
-    if (!selectedFile) return;
-
-    if (!selectedFile.type.startsWith("image/")) {
-      alert("Please select an image file");
-      return;
-    }
-
-    if (selectedFile.size > 2 * 1024 * 1024) {
-      alert("Image must be under 2MB");
-      return;
-    }
-
-    setFile(selectedFile);
-    setPreview(URL.createObjectURL(selectedFile));
+    setFile(file);
+    setPreview(URL.createObjectURL(file));
   };
 
-  // =========================
-  // IMG BB UPLOAD
-  // =========================
-  const uploadToImgBB = async (file) => {
-    if (!file) return null;
-
+  const uploadImage = async (file) => {
     const apiKey = process.env.NEXT_PUBLIC_IMGBB_API_KEY;
 
-    if (!apiKey) {
-      throw new Error("ImgBB API key missing");
-    }
-
-    const formData = new FormData();
-    formData.append("image", file);
+    const form = new FormData();
+    form.append("image", file);
 
     const res = await fetch(`https://api.imgbb.com/1/upload?key=${apiKey}`, {
       method: "POST",
-      body: formData,
+      body: form,
     });
 
     const data = await res.json();
-
-    if (!data.success) {
-      throw new Error("Image upload failed");
-    }
-
     return data.data.url;
   };
 
-  // =========================
-  // SUBMIT FORM
-  // =========================
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (!file) {
-      alert("Please upload an image");
-      return;
-    }
 
     try {
       setLoading(true);
 
-      // 1. upload image
-      const imageUrl = await uploadToImgBB(file);
+      const imageUrl = await uploadImage(file);
 
-      // 2. prepare payload
       const payload = {
         ...formData,
-        trainerId: user?.id,
-        trainerName: user?.name,
         image: imageUrl,
-        status: "pending",
+        status: "Pending",
+        bookingCount: 0,
       };
 
-      // 3. send to backend
-      const result = await postClasses(payload);
+      const token = await getToken()
 
-      if (!result.success) {
-        throw new Error(result.message);
-      }
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/classes`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(payload),
+        },
+      );
 
-      toast.success(result.message);
+      const data = await res.json();
 
-      // reset form
+      if (!res.ok) throw new Error(data.message);
+
+      toast.success("Class created successfully");
+
       setFormData({
+        trainerId: user.id,
+        trainerName: user.name,
+        trainerEmail: user.email,
         className: "",
         category: "",
         difficulty: "",
@@ -136,134 +110,114 @@ const AddClassPage = () => {
         schedule: "",
         price: "",
         description: "",
+        image: "",
       });
 
       setFile(null);
       setPreview(null);
-    } catch (error) {
-      alert(error.message);
+    } catch (err) {
+      toast.error(err.message);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="p-6 max-w-2xl mx-auto space-y-6">
-      <h1 className="text-2xl font-bold">Add New Class</h1>
+    <div className="max-w-3xl mx-auto p-6">
+      <h1 className="text-2xl font-bold mb-4">Add Class</h1>
 
-      {/* ================= FORM ================= */}
-      <form
-        onSubmit={handleSubmit}
-        className="space-y-4 p-6 border rounded-xl bg-white dark:bg-black"
-      >
-        {/* CLASS NAME */}
+      <form onSubmit={handleSubmit} className="space-y-4">
         <input
-          type="text"
           name="className"
-          value={formData.className}
-          onChange={handleChange}
           placeholder="Class Name"
-          className="w-full px-3 py-2 border rounded-md"
+          onChange={handleChange}
+          className="w-full p-2 border"
         />
 
-        {/* IMAGE UPLOAD */}
-        <div className="flex flex-col gap-2">
-          <label className="text-sm font-medium">Class Image</label>
+        <div className="space-y-2">
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+            Class Image
+          </label>
 
-          <label className="flex items-center justify-between border rounded-lg px-3 py-2 cursor-pointer bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 transition">
-            <span className="text-gray-500 text-sm">
-              {preview ? "Image selected" : "Upload class image"}
+          <label className="flex items-center pl-3  w-full h-10 border  cursor-pointer transition">
+            <span className="text-xs text-gray-400 mt-1">
+              PNG, JPG (Max 2MB)
             </span>
 
-            <span className="text-blue-500 text-sm font-medium">Browse</span>
-
             <input
+              required
               type="file"
               accept="image/*"
-              className="hidden"
               onChange={handleImage}
+              className="hidden"
             />
           </label>
 
-          {/* PREVIEW */}
+          {/* Preview */}
           {preview && (
-            <Image
-              src={preview}
-              alt="preview"
-              width={20}
-              height={20}
-              className="w-24 h-24 object-cover rounded-full border mx-auto mt-2"
-            />
+            <div className="flex justify-center mt-3">
+              <Image
+                src={preview}
+                width={100}
+                height={100}
+                alt="preview"
+                className="w-24 h-24 object-cover rounded-full border-2 border-red-500 shadow-md"
+              />
+            </div>
           )}
         </div>
 
-        {/* CATEGORY */}
         <input
-          type="text"
+          required
           name="category"
-          value={formData.category}
-          onChange={handleChange}
           placeholder="Category"
-          className="w-full px-3 py-2 border rounded-md"
+          onChange={handleChange}
+          className="w-full p-2 border"
         />
 
-        {/* DIFFICULTY */}
-        <select
+        <input
+          required
           name="difficulty"
-          value={formData.difficulty}
+          placeholder="Difficulty"
           onChange={handleChange}
-          className="w-full px-3 py-2 border rounded-md text-gray-500"
-        >
-          <option value="">Select Difficulty</option>
-          <option value="Beginner">Beginner</option>
-          <option value="Intermediate">Intermediate</option>
-          <option value="Advanced">Advanced</option>
-        </select>
+          className="w-full p-2 border"
+        />
 
-        {/* DURATION */}
         <input
-          type="text"
+          required
           name="duration"
-          value={formData.duration}
-          onChange={handleChange}
           placeholder="Duration"
-          className="w-full px-3 py-2 border rounded-md"
+          onChange={handleChange}
+          className="w-full p-2 border"
         />
 
-        {/* SCHEDULE */}
         <input
-          type="text"
+          required
           name="schedule"
-          value={formData.schedule}
-          onChange={handleChange}
           placeholder="Schedule"
-          className="w-full px-3 py-2 border rounded-md"
+          onChange={handleChange}
+          className="w-full p-2 border"
         />
 
-        {/* PRICE */}
         <input
-          type="number"
+          required
           name="price"
-          value={formData.price}
-          onChange={handleChange}
           placeholder="Price"
-          className="w-full px-3 py-2 border rounded-md"
-        />
-
-        {/* DESCRIPTION */}
-        <textarea
-          name="description"
-          value={formData.description}
           onChange={handleChange}
-          placeholder="Description"
-          rows={4}
-          className="w-full px-3 py-2 border rounded-md"
+          className="w-full p-2 border"
         />
 
-        {/* SUBMIT */}
+        <textarea
+          required
+          name="description"
+          placeholder="Description"
+          onChange={handleChange}
+          className="w-full p-2 border"
+        />
+
         <button
           disabled={loading}
-          className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition disabled:opacity-50"
+          className="w-full bg-red-500 text-white py-2"
         >
           {loading ? "Creating..." : "Add Class"}
         </button>

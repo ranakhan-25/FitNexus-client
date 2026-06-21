@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Menu, X, Dumbbell } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
@@ -14,7 +14,7 @@ export default function Navbar() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const { data: session, isPending } = authClient.useSession();
-
+  const router = useRouter()
   const user = session?.user;
   const UserWord = session?.user?.name[0].toUpperCase();
 
@@ -42,6 +42,7 @@ export default function Navbar() {
     const result = await authClient.signOut();
     if (result) {
       toast("LogOut Successfully")
+      router.push("/unauthorized")
     }
     if (!result) {
       toast("LogOut is Filed !")

@@ -1,167 +1,163 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import Image from "next/image";
+import { useEffect, useState, useMemo } from "react";
 import { authClient } from "@/lib/auth-client";
-import Link from "next/link";
+import { toast } from "react-toastify";
 
-const TrainerDashboard = () => {
+const TrainerOverview = () => {
   const { data: session } = authClient.useSession();
   const trainerId = session?.user?.id;
-
-  const [data, setData] = useState(null);
+  const user = session?.user;
+  
+  const [stats, setStats] = useState({
+    totalClasses: 0,
+    totalStudents: 0,
+    students: [],
+    loading: true,
+  });
 
   useEffect(() => {
-    if (!trainerId) return;
-
-    const fetchData = async () => {
+    const fetchStats = async () => {
       try {
         const res = await fetch(
-          `${process.env.NEXT_PUBLIC_SERVER_URL}/api/trainer/dashboard/${trainerId}`
+          `${process.env.NEXT_PUBLIC_SERVER_URL}/trainer/overview?trainerId=${trainerId}`,
         );
 
-        const result = await res.json();
-        setData(result?.data || null);
-      } catch (err) {
-        console.log(err);
-        setData(null);
+        const data = await res.json();
+
+        if (data.success) {
+          setStats({
+            totalClasses: data.totalClasses || 0,
+            totalStudents: data.totalStudents || 0,
+            students: data.students || [],
+            loading: false,
+          });
+        } else {
+          setStats((prev) => ({ ...prev, loading: false }));
+        }
+      } catch (error) {
+        console.log(error);
+        setStats((prev) => ({ ...prev, loading: false }));
       }
     };
 
-    fetchData();
+    if (trainerId) fetchStats();
   }, [trainerId]);
 
-  if (!data) {
-    return (
-      <div className="p-10 text-center text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-900 min-h-screen">
-        Loading dashboard...
-      </div>
-    );
-  }
+  const StatCard = ({ title, value, icon, gradient }) => (
+    <div className="rounded-2xl p-6 border bg-white dark:bg-gray-900 dark:border-gray-800 shadow-md">
+      <div className="flex justify-between">
+        <div>
+          <p className="text-sm text-gray-500 dark:text-gray-400">{title}</p>
+          {stats.loading ? (
+            <div className="h-6 w-20 bg-gray-200 dark:bg-gray-700 animate-pulse rounded mt-2" />
+          ) : (
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mt-2">
+              {value}
+            </h2>
+          )}
+        </div>
 
-  const { trainer, totalClasses, totalStudents, classes = [] } = data;
+        <div
+          className={`w-12 h-12 rounded-xl flex items-center justify-center text-white ${gradient}`}
+        >
+          <span>{icon}</span>
+        </div>
+      </div>
+    </div>
+  );
 
   return (
-    <div className="p-6 space-y-6 text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-900 min-h-screen">
-
-      {/* ================= STATS ================= */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-
-        <div className="p-5 rounded-xl bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
-          <p className="text-gray-500 dark:text-gray-400 text-sm">Total Classes</p>
-          <h2 className="text-2xl font-bold">{totalClasses}</h2>
-        </div>
-
-        <div className="p-5 rounded-xl bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
-          <p className="text-gray-500 dark:text-gray-400 text-sm">Total Students</p>
-          <h2 className="text-2xl font-bold">{totalStudents}</h2>
-        </div>
-
-        <div className="p-5 rounded-xl bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
-          <p className="text-gray-500 dark:text-gray-400 text-sm">Forum Posts</p>
-          <h2 className="text-2xl font-bold">3</h2>
-        </div>
+    <div className="min-h-screen bg-gray-50 dark:bg-black px-4 py-10">
+      {/* HEADER */}
+      <div className="max-w-6xl mx-auto mb-8">
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+          Trainer Overview
+        </h1>
+        <p className="text-gray-500 dark:text-gray-400">
+          Manage your classes and enrolled students
+        </p>
       </div>
 
-      {/* ================= PROFILE ================= */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-5 rounded-xl bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+      {/* STATS */}
+      <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
+        <StatCard
+          title="Total Classes"
+          value={stats.totalClasses}
+          icon="🏋️"
+          gradient="bg-red-500"
+        />
 
-        <div className="flex items-center gap-4">
-          <Image
-            src={trainer?.image || "/avatar.png"}
-            alt="trainer"
-            width={70}
-            height={70}
-            className="rounded-full border border-gray-300 dark:border-gray-600"
-          />
-
-          <div>
-            <h2 className="font-bold text-lg flex items-center gap-2">
-              {trainer?.name}
-            </h2>
-
-            <p className="text-gray-600 dark:text-gray-400 text-sm">
-              {trainer?.email}
-            </p>
-
-            <span className="text-xs bg-blue-600 text-white px-2 py-1 rounded">
-              Trainer
-            </span>
-          </div>
-        </div>
-
-        {/* ACTIONS */}
-        <div className="flex flex-wrap gap-2">
-          <Link
-            href="/dashboard/trainer/add-class"
-            className="px-3 py-1.5 text-sm rounded bg-green-600 hover:bg-green-700 text-white"
-          >
-            Add New Class
-          </Link>
-
-          <Link
-            href="/dashboard/trainer/my-classes"
-            className="px-3 py-1.5 text-sm rounded bg-blue-600 hover:bg-blue-700 text-white"
-          >
-            My Classes
-          </Link>
-
-          <Link
-            href="/dashboard/trainer/add-forum-post"
-            className="px-3 py-1.5 text-sm rounded bg-purple-600 hover:bg-purple-700 text-white"
-          >
-            Add Forum Post
-          </Link>
-        </div>
+        <StatCard
+          title="Total Students"
+          value={stats.totalStudents}
+          icon="👥"
+          gradient="bg-orange-500"
+        />
       </div>
 
-      {/* ================= RECENT CLASSES ================= */}
-      <div className="space-y-3">
+      {/* 👇 STUDENT LIST SECTION */}
+      <div className="max-w-6xl mx-auto mt-10">
+        <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
+          Enrolled Students
+        </h2>
 
-        <h2 className="text-lg font-semibold">Recent Classes</h2>
+        <div className="overflow-x-auto rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 shadow-md">
+          <table className="min-w-full text-sm">
+            <thead className="bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300">
+              <tr>
+                <th className="p-3 text-left">Student Email</th>
+                <th className="p-3 text-left">Class ID</th>
+                <th className="p-3 text-left">Status</th>
+                <th className="p-3 text-left">Booked Date</th>
+              </tr>
+            </thead>
 
-        {classes.length === 0 ? (
-          <p className="text-gray-500 dark:text-gray-400">
-            No classes found
-          </p>
-        ) : (
-          classes.slice(0, 4).map((cls) => (
-            <div
-              key={cls._id}
-              className="flex items-center justify-between p-4 rounded-xl bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700"
-            >
-              <div className="flex items-center gap-3">
-                <Image
-                  src={cls.image}
-                  alt=""
-                  width={50}
-                  height={50}
-                  className="rounded-md object-cover"
-                />
+            <tbody>
+              {stats.loading ? (
+                <tr>
+                  <td colSpan="4" className="p-4 text-center text-gray-500">
+                    Loading...
+                  </td>
+                </tr>
+              ) : stats.students.length === 0 ? (
+                <tr>
+                  <td colSpan="4" className="p-4 text-center text-gray-500">
+                    No students enrolled yet
+                  </td>
+                </tr>
+              ) : (
+                stats.students.map((s, i) => (
+                  <tr
+                    key={i}
+                    className="border-t border-gray-200 dark:border-gray-800"
+                  >
+                    <td className="p-3 text-gray-900 dark:text-white">
+                      {s.userEmail || "N/A"}
+                    </td>
 
-                <div>
-                  <h3 className="font-semibold">{cls.className}</h3>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">
-                    {cls.category} • {cls.difficulty}
-                  </p>
-                </div>
-              </div>
+                    <td className="p-3 text-gray-500 dark:text-gray-400">
+                      {s.classId}
+                    </td>
 
-              <div className="text-right">
-                <p className="text-green-600 dark:text-green-400 font-semibold">
-                  ${cls.price}
-                </p>
+                    <td className="p-3">
+                      <span className="px-2 py-1 text-xs rounded bg-green-100 text-green-600 dark:bg-green-900 dark:text-green-300">
+                        Enrolled
+                      </span>
+                    </td>
 
-                <span className="text-xs px-2 py-1 bg-green-200 dark:bg-green-900 text-green-700 dark:text-green-300 rounded">
-                  {cls.status}
-                </span>
-              </div>
-            </div>
-          ))
-        )}
+                    <td className="p-3 text-gray-500 dark:text-gray-400">
+                      {new Date(s.createdAt).toLocaleDateString()}
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );
 };
 
-export default TrainerDashboard;
+export default TrainerOverview;

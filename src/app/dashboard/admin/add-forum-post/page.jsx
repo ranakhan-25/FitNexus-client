@@ -46,7 +46,7 @@ const AddForumPostPage = () => {
       {
         method: "POST",
         body: form,
-      }
+      },
     );
 
     const data = await res.json();
@@ -83,7 +83,7 @@ const AddForumPostPage = () => {
         createdAt: new Date(),
       };
 
-      const token = await getToken()
+      const token = await getToken();
 
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_SERVER_URL}/api/forum-posts`,
@@ -94,7 +94,7 @@ const AddForumPostPage = () => {
             authorization: `Bearer ${token}`,
           },
           body: JSON.stringify(payload),
-        }
+        },
       );
 
       const data = await res.json();
@@ -121,11 +121,8 @@ const AddForumPostPage = () => {
 
   return (
     <div className="max-w-3xl mx-auto p-6">
-
       <div className="mb-8">
-        <h1 className="text-3xl font-bold">
-          Add Forum Post
-        </h1>
+        <h1 className="text-3xl font-bold">Add Forum Post</h1>
 
         <p className="text-default-500 mt-2">
           Share fitness knowledge with the community.
@@ -138,9 +135,7 @@ const AddForumPostPage = () => {
       >
         {/* Title */}
         <div>
-          <label className="font-medium mb-2 block">
-            Post Title
-          </label>
+          <label className="font-medium mb-2 block">Post Title</label>
 
           <input
             type="text"
@@ -155,27 +150,16 @@ const AddForumPostPage = () => {
 
         {/* Image Upload */}
         <div>
-          <label className="font-medium mb-2 block">
-            Post Image
-          </label>
+          <label className="font-medium mb-2 block">Post Image</label>
 
           <label className="border rounded-xl p-3 flex justify-between items-center cursor-pointer">
             <span className="text-default-500">
-              {preview
-                ? "Image Selected"
-                : "Upload forum image"}
+              {preview ? "Image Selected" : "Upload forum image"}
             </span>
 
-            <span className="font-medium text-primary">
-              Browse
-            </span>
+            <span className="font-medium text-primary">Browse</span>
 
-            <input
-              type="file"
-              accept="image/*"
-              hidden
-              onChange={handleImage}
-            />
+            <input type="file" accept="image/*" hidden onChange={handleImage} />
           </label>
 
           {preview && (
@@ -191,9 +175,7 @@ const AddForumPostPage = () => {
 
         {/* Description */}
         <div>
-          <label className="font-medium mb-2 block">
-            Description
-          </label>
+          <label className="font-medium mb-2 block">Description</label>
 
           <textarea
             rows={6}
@@ -211,9 +193,7 @@ const AddForumPostPage = () => {
           disabled={loading}
           className="w-full bg-green-500 text-white py-3 rounded-xl font-medium"
         >
-          {loading
-            ? "Publishing..."
-            : "Publish Forum Post"}
+          {loading ? "Publishing..." : "Publish Forum Post"}
         </button>
       </form>
     </div>

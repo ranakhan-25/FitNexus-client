@@ -1,125 +1,140 @@
 "use client";
 
-import { authClient } from "@/lib/auth-client";
 import { useState } from "react";
+import { authClient } from "@/lib/auth-client";
+import { Award, Dumbbell, Loader2, Send } from "lucide-react";
+import { toast } from "react-toastify";
+import Image from "next/image";
+import { getToken } from "@/components/service/getToken";
 
-const ApplyTrainerPage = () => {
+export default function ApplyTrainerPage() {
   const { data: session } = authClient.useSession();
+
   const user = session?.user;
+
+  const [loading, setLoading] = useState(false);
 
   const [formData, setFormData] = useState({
     experience: "",
     specialty: "",
   });
 
-  const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState("");
-
-  // ✅ FIXED HANDLE CHANGE
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!formData.experience || !formData.specialty) {
-      alert("Please fill all fields");
-      return;
-    }
-
     try {
       setLoading(true);
-      setSuccess("");
 
-      const payload = {
-        userId: user?.id,
-        name: user?.name,
-        email: user?.email,
-        experience: formData.experience,
-        specialty: formData.specialty,
-        status: "pending",
-        feedback: "",
-      };
-
-      const res = await fetch("/api/dashboard/apply-trainer", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+      const token = await getToken()
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/trainer-applications`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            userId: user?.id,
+            name: user?.name,
+            email: user?.email,
+            image: user?.image,
+            experience: Number(formData.experience),
+            specialty: formData.specialty,
+          }),
         },
-        body: JSON.stringify(payload),
-      });
+      );
 
-      if (!res.ok) {
-        throw new Error("Failed to submit application");
+      const data = await res.json();
+
+      if (!data.success) {
+        return toast.error(data.message);
       }
 
-      setSuccess("Application submitted successfully! Status: Pending");
-
-      setFormData({
-        experience: "",
-        specialty: "",
-      });
+      toast.success("Application Submitted");
     } catch (error) {
-      console.log(error);
-      alert("Something went wrong");
+      // console.log(error);
+      toast.error("Something went wrong");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="p-6 max-w-xl mx-auto space-y-6">
-
+    <div className="max-w-4xl mx-auto space-y-6 p-5">
       {/* Header */}
-      <div>
-        <h1 className="text-2xl font-bold">Apply as Trainer</h1>
-        <p className="text-sm text-gray-500">
-          Fill in your details to become a certified trainer
+
+      <div className="bg-gradient-to-r from-green-500 to-emerald-600 rounded-3xl p-8 text-white">
+        <h1 className="text-3xl font-bold">Become a Trainer</h1>
+
+        <p className="mt-2 text-green-100">
+          Share your expertise and inspire members.
         </p>
       </div>
 
-      {/* Success Message */}
-      {success && (
-        <div className="p-3 bg-green-100 text-green-700 rounded-md text-sm">
-          {success}
+      {/* User Card */}
+
+      <div className="bg-white dark:bg-zinc-900 rounded-3xl border dark:border-zinc-800 p-6">
+        <div className="flex items-center gap-4">
+          <Image
+            src={user?.image || "image.png"}
+            alt=""
+            width={12}
+            height={12}
+            className="w-16 h-16 rounded-full"
+          />
+
+          <div>
+            <h3 className="font-bold text-xl dark:text-white">{user?.name}</h3>
+
+            <p className="text-gray-500">{user?.email}</p>
+          </div>
         </div>
-      )}
+      </div>
 
       {/* Form */}
       <form
         onSubmit={handleSubmit}
-        className="space-y-4 p-6 border rounded-xl bg-white dark:bg-black"
+        className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-3xl p-8 space-y-6 shadow-sm"
       >
-
         {/* Experience */}
         <div>
-          <label className="text-sm font-medium">
+          <label className="block mb-2 font-medium text-zinc-700 dark:text-zinc-200">
             Experience (Years)
           </label>
+
           <input
             type="number"
-            name="experience"
+            required
+            min="0"
             value={formData.experience}
-            onChange={handleChange}
-            placeholder="e.g. 3"
-            className="w-full mt-1 px-3 py-2 border rounded-md bg-transparent outline-none"
+            onChange={(e) =>
+              setFormData({
+                ...formData,
+                experience: e.target.value,
+              })
+            }
+            placeholder="Enter your experience"
+            className="w-full h-12 rounded-xl border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white placeholder:text-zinc-400 dark:placeholder:text-zinc-500 px-4 outline-none focus:ring-2 focus:ring-green-500"
           />
         </div>
 
         {/* Specialty */}
         <div>
-          <label className="text-sm font-medium">Specialty</label>
+          <label className="block mb-2 font-medium text-zinc-700 dark:text-zinc-200">
+            Specialty
+          </label>
+
           <select
-            name="specialty"
+            required
             value={formData.specialty}
-            onChange={handleChange}
-            className="w-full mt-1 px-3 py-2 border rounded-md bg-transparent outline-none"
+            onChange={(e) =>
+              setFormData({
+                ...formData,
+                specialty: e.target.value,
+              })
+            }
+            className="w-full h-12 rounded-xl border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white px-4 outline-none focus:ring-2 focus:ring-green-500"
           >
             <option value="">Select Specialty</option>
             <option value="Yoga">Yoga</option>
@@ -127,20 +142,52 @@ const ApplyTrainerPage = () => {
             <option value="Cardio">Cardio</option>
             <option value="CrossFit">CrossFit</option>
             <option value="Zumba">Zumba</option>
+            <option value="Strength Training">Strength Training</option>
+            <option value="Bodybuilding">Bodybuilding</option>
+            <option value="HIIT">HIIT</option>
           </select>
         </div>
 
-        {/* Submit */}
+        {/* Status Card */}
+        <div className="rounded-2xl border border-amber-200 dark:border-amber-900 bg-amber-50 dark:bg-amber-950/30 p-4">
+          <div className="flex gap-3">
+            <Award
+              size={24}
+              className="text-amber-600 dark:text-amber-400 flex-shrink-0"
+            />
+
+            <div>
+              <h4 className="font-semibold text-zinc-900 dark:text-white">
+                Application Status
+              </h4>
+
+              <p className="text-sm text-amber-700 dark:text-amber-300 mt-1">
+                Your trainer application will be submitted with a{" "}
+                <span className="font-semibold">Pending</span> status and
+                reviewed by an administrator.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Submit Button */}
         <button
-          type="submit"
           disabled={loading}
-          className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition disabled:opacity-50"
+          className="w-full h-12 rounded-xl bg-green-500 hover:bg-green-600 disabled:opacity-50 text-white font-semibold flex justify-center items-center gap-2 transition-all"
         >
-          {loading ? "Submitting..." : "Apply Now"}
+          {loading ? (
+            <>
+              <Loader2 size={18} className="animate-spin" />
+              Submitting...
+            </>
+          ) : (
+            <>
+              <Send size={18} />
+              Submit Application
+            </>
+          )}
         </button>
       </form>
     </div>
   );
-};
-
-export default ApplyTrainerPage;
+}

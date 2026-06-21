@@ -27,36 +27,92 @@ const DashboardSideBar = () => {
 
   const userMenuItems = [
     { title: "Overview", href: "/dashboard/user", icon: LayoutDashboardIcon },
-    { title: "Booked Classes", href: "/dashboard/user/booked-classes", icon: CalendarCheck },
-    { title: "Apply as Trainer", href: "/dashboard/user/apply-trainer", icon: UserPlus },
-    { title: "Favorite Classes", href: "/dashboard/user/favorites", icon: Heart },
+    {
+      title: "Booked Classes",
+      href: "/dashboard/user/booked-classes",
+      icon: CalendarCheck,
+    },
+    {
+      title: "Apply as Trainer",
+      href: "/dashboard/user/apply-trainer",
+      icon: UserPlus,
+    },
+    {
+      title: "Favorite Classes",
+      href: "/dashboard/user/favorites",
+      icon: Heart,
+    },
   ];
 
   const trainerMenuItems = [
     { title: "Overview", href: "/dashboard/trainer", icon: LayoutDashboard },
-    { title: "Add Class", href: "/dashboard/trainer/add-class", icon: PlusCircle },
-    { title: "My Classes", href: "/dashboard/trainer/my-classes", icon: Dumbbell },
-    { title: "Add Forum Post", href: "/dashboard/trainer/add-forum-post", icon: MessageSquarePlus },
-    { title: "My Forum Posts", href: "/dashboard/trainer/my-forum-posts", icon: MessagesSquare },
+    {
+      title: "Add Class",
+      href: "/dashboard/trainer/add-class",
+      icon: PlusCircle,
+    },
+    {
+      title: "My Classes",
+      href: "/dashboard/trainer/my-classes",
+      icon: Dumbbell,
+    },
+    {
+      title: "Add Forum Post",
+      href: "/dashboard/trainer/add-forum-post",
+      icon: MessageSquarePlus,
+    },
+    {
+      title: "My Forum Posts",
+      href: "/dashboard/trainer/my-forum-posts",
+      icon: MessagesSquare,
+    },
   ];
 
   const adminMenuItems = [
     { title: "Overview", href: "/dashboard/admin", icon: LayoutDashboard },
-    { title: "Manage Users", href: "/dashboard/admin/manage-users", icon: Users },
-    { title: "Applied Trainers", href: "/dashboard/admin/applied-trainers", icon: UserCheck },
-    { title: "Manage Trainers", href: "/dashboard/admin/manage-trainers", icon: ShieldCheck },
-    { title: "Manage Classes", href: "/dashboard/admin/manage-classes", icon: Dumbbell },
-    { title: "Add Forum Post", href: "/dashboard/admin/add-forum-post", icon: MessageSquarePlus },
-    { title: "Forum Post Manage", href: "/dashboard/admin/manage-forum-posts", icon: MessagesSquare },
-    { title: "Transactions", href: "/dashboard/admin/transactions", icon: Receipt },
+    {
+      title: "Manage Users",
+      href: "/dashboard/admin/manage-users",
+      icon: Users,
+    },
+    {
+      title: "Applied Trainers",
+      href: "/dashboard/admin/applied-trainers",
+      icon: UserCheck,
+    },
+    {
+      title: "Manage Trainers",
+      href: "/dashboard/admin/manage-trainers",
+      icon: ShieldCheck,
+    },
+    {
+      title: "Manage Classes",
+      href: "/dashboard/admin/manage-classes",
+      icon: Dumbbell,
+    },
+    {
+      title: "Add Forum Post",
+      href: "/dashboard/admin/add-forum-post",
+      icon: MessageSquarePlus,
+    },
+    {
+      title: "Forum Post Manage",
+      href: "/dashboard/admin/manage-forum-posts",
+      icon: MessagesSquare,
+    },
+    {
+      title: "Transactions",
+      href: "/dashboard/admin/transactions",
+      icon: Receipt,
+    },
   ];
 
   const navItems =
     session?.user?.role === "admin"
       ? adminMenuItems
       : session?.user?.role === "trainer"
-      ? trainerMenuItems
-      : userMenuItems;
+        ? trainerMenuItems
+        : userMenuItems;
 
   if (isPending) {
     return <p className="p-4 text-sm text-muted-foreground">Loading...</p>;
@@ -66,7 +122,7 @@ const DashboardSideBar = () => {
   const initial = user?.name?.[0]?.toUpperCase();
 
   const navContent = (
-    <nav className="flex flex-col gap-1 min-h-screen">
+    <nav className="flex flex-col gap-1 min-h-[75vh] pb-10">
       {navItems.map((item) => (
         <ActiveLink
           key={item.title}
@@ -86,16 +142,15 @@ const DashboardSideBar = () => {
     <>
       {/* Desktop Sidebar */}
       <div className="min-w-65 hidden lg:block bg-background text-foreground border-r border-border px-2">
-        
         {/* Profile */}
         <div className="flex items-center gap-3 py-3">
           {user?.image ? (
             <Image
-              src={user.image}
+              src={user?.image || "image.png"}
               alt="profile"
               width={44}
               height={44}
-              className="rounded-full object-cover"
+              className="w-14 h-14 rounded-full object-cover"
             />
           ) : (
             <span className="bg-muted w-16 h-16 flex items-center justify-center rounded-full font-bold">

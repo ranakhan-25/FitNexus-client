@@ -2,234 +2,233 @@
 
 import { authClient } from "@/lib/auth-client";
 import Image from "next/image";
-import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
 import { toast } from "react-toastify";
+import { getToken } from "@/components/service/getToken";
 
-export default function ClassDetailsPage() {
-  const { data: session, isLoading: authLoading } = authClient.useSession();
-
-  const userId = session?.user?.id;
-
-  console.log(userId);
+const ClassDetailsPage = () => {
   const { id } = useParams();
   const router = useRouter();
+
+  const { data: session } = authClient.useSession();
+  const user = session?.user;
 
   const [classData, setClassData] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const [alreadyBooked, setAlreadyBooked] = useState(false);
+  const [booked, setBooked] = useState(false);
   const [favorite, setFavorite] = useState(false);
 
-  const BASE_URL = process.env.NEXT_PUBLIC_SERVER_URL || "";
-
-  // -----------------------------
   // FETCH CLASS DETAILS
-  // -----------------------------
-  const fetchClassDetails = async () => {
-    try {
-      setLoading(true);
-
-      // SAFE URL BUILD
-      const params = new URLSearchParams();
-
-      if (userId) {
-        params.append("userId", userId);
-      }
-
-      if (userId) {
-        const url = `${BASE_URL}/api/classes/${id}`
-        const res = await fetch(url);
-        if (!res.ok) {
-          throw new Error(`HTTP Error: ${res.status}`);
-        }
+  useEffect(() => {
+    const fetchClass = async () => {
+      try {
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_SERVER_URL}/api/classes/${id}`,
+        );
 
         const data = await res.json();
 
         if (!data.success) {
-          toast.error(data.message || "Failed to load class details");
-          return;
+          throw new Error(data.message || "Class not found");
         }
 
-        setClassData(data.classData);
-        setAlreadyBooked(data.alreadyBooked || false);
-        setFavorite(data.favorite || false);
+        setClassData(data.data);
+      } catch (error) {
+        toast.error(error.message || "Failed to load class");
+        setClassData(null);
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      console.log("Fetch Error:", error);
-      toast.error("Failed to load class details");
-    } finally {
-      setLoading(false);
-    }
-  };
+    };
 
-  // -----------------------------
-  // SAFE USE EFFECT
-  // -----------------------------
-  useEffect(() => {
-    if (!id) return;
-    if (authLoading) return;
+    if (id) fetchClass();
+  }, [id]);
 
-    fetchClassDetails();
-  }, [id, authLoading, userId]);
-
-  // -----------------------------
-  // BOOK NOW
-  // -----------------------------
+  // BOOK CLASS
   const handleBookNow = () => {
-    if (!userId) {
-      toast.error("Please login first");
-      return;
-    }
-
-    if (alreadyBooked) {
-      toast.error("You already booked this class");
+    if (booked) {
+      toast.error("You have already booked this class");
       return;
     }
 
     router.push(`/payment/${id}`);
   };
 
-  // -----------------------------
-  // FAVORITE
-  // -----------------------------
+  // ADD FAVORITE
   const handleFavorite = async () => {
-    if (!userId) {
-      toast.error("Please login first");
-      return;
-    }
-
     try {
-      const res = await fetch(`${BASE_URL}/api/favorites`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+      const token = await getToken();
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/favorites`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            classId: id,
+            userId: user?.id,
+            userEmail: user?.email,
+            className: classData?.className,
+            image: classData?.image,
+            price: classData?.price,
+          }),
         },
-        body: JSON.stringify({
-          classId: id,
-          userId,
-        }),
-      });
+      );
 
       const data = await res.json();
 
-      if (!data.success) {
-        toast.error(data.message);
-        return;
+      if (!res.ok || !data.success) {
+        throw new Error(data.message || "Failed to add favorite");
       }
 
       setFavorite(true);
-      toast.success("Added to favorites ❤️");
+      toast.success("Added to favorites!");
     } catch (error) {
-      console.log(error);
-      toast.error("Something went wrong");
+      toast.error(error.message || "Something went wrong");
     }
   };
 
-  // -----------------------------
+  // REMOVE FAVORITE
+  const handleUnFavorite = async () => {
+    try {
+      const token = await getToken();
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/favorites/${id}`,
+        {
+          method: "DELETE",
+          headers: {
+            authorization: `Bearer ${token}`,
+          },
+        },
+      );
+
+      const data = await res.json();
+
+      if (!res.ok || !data.success) {
+        throw new Error(data.message || "Failed to remove favorite");
+      }
+
+      setFavorite(false);
+      toast.success("Removed from favorites");
+    } catch (error) {
+      toast.error(error.message || "Error removing favorite");
+    }
+  };
+
   // LOADING UI
-  // -----------------------------
-  if (loading || authLoading) {
+  if (loading) {
     return (
-      <div className="h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900">
-        <p className="text-gray-600 dark:text-gray-300 text-lg">
-          Loading class details...
-        </p>
+      <div className="min-h-screen flex items-center justify-center">
+        Loading class details...
       </div>
     );
   }
 
-  // -----------------------------
   // NOT FOUND UI
-  // -----------------------------
   if (!classData) {
     return (
-      <div className="h-screen flex items-center justify-center">
-        <p className="text-xl font-semibold">Class Not Found</p>
+      <div className="min-h-screen flex items-center justify-center">
+        Class not found
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 py-10 px-4">
-      <div className="max-w-7xl mx-auto grid lg:grid-cols-3 gap-8">
-        {/* LEFT SIDE */}
-        <div className="lg:col-span-2 bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
+    <div className="max-w-6xl mx-auto p-6">
+      {/* TOP CARD */}
+      <div className="grid md:grid-cols-2 gap-8 bg-white dark:bg-zinc-900 border dark:border-zinc-800 rounded-3xl overflow-hidden">
+        {/* IMAGE */}
+        <div className="relative h-80 md:h-full">
           <Image
             src={classData.image}
             alt={classData.className}
-            width={1200}
-            height={700}
-            className="w-full h-[420px] object-cover rounded-xl"
+            fill
+            className="object-cover"
           />
-
-          <h1 className="text-3xl font-bold mt-6 text-gray-900 dark:text-white">
-            {classData.className}
-          </h1>
-
-          <p className="mt-4 text-gray-600 dark:text-gray-300 leading-7">
-            {classData.description}
-          </p>
-
-          {/* DETAILS GRID */}
-          <div className="grid md:grid-cols-2 gap-4 mt-8">
-            <Info title="Trainer" value={classData.trainerName} />
-            <Info title="Category" value={classData.category} />
-            <Info title="Duration" value={classData.duration} />
-            <Info title="Schedule" value={classData.schedule} />
-            <Info title="Difficulty" value={classData.difficulty} />
-            <Info title="Bookings" value={classData.bookingCount || 0} />
-          </div>
         </div>
 
-        {/* RIGHT SIDE */}
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 sticky top-24 h-fit">
-          <h2 className="text-4xl font-bold text-green-500">
-            ${classData.price}
-          </h2>
+        {/* INFO */}
+        <div className="p-6 space-y-4">
+          <h1 className="text-3xl font-bold">{classData.className}</h1>
 
-          <p className="text-gray-500 dark:text-gray-400 mb-6">Per Session</p>
+          <p className="text-gray-500">{classData.description}</p>
 
-          <button
-            onClick={handleBookNow}
-            disabled={alreadyBooked}
-            className={`w-full py-3 rounded-xl font-semibold mb-4 transition ${
-              alreadyBooked
-                ? "bg-gray-400 cursor-not-allowed text-white"
-                : "bg-green-500 hover:bg-green-600 text-white"
-            }`}
-          >
-            {alreadyBooked ? "Already Booked" : "Book Now"}
-          </button>
+          <div className="text-sm space-y-2">
+            <p>
+              <b>Schedule:</b> {classData.schedule}
+            </p>
+            <p>
+              <b>Duration:</b> {classData.duration}
+            </p>
+            <p>
+              <b>Category:</b> {classData.category}
+            </p>
+            <p>
+              <b>Price:</b> ${classData.price}
+            </p>
+            <p>
+              <b>Trainer:</b> {classData.trainerName}
+            </p>
+          </div>
 
-          <button
-            onClick={handleFavorite}
-            disabled={favorite}
-            className={`w-full py-3 rounded-xl border transition ${
-              favorite
-                ? "bg-pink-100 border-pink-300 text-pink-600"
-                : "hover:bg-gray-100 dark:hover:bg-gray-700"
-            }`}
-          >
-            {favorite ? "Saved ❤️" : "Add to Favorites"}
-          </button>
+          {/* ACTIONS */}
+          <div className="flex gap-3 pt-4">
+            {/* BOOK */}
+            <button
+              onClick={handleBookNow}
+              disabled={booked}
+              className={`px-5 py-3 rounded-xl font-semibold ${
+                booked
+                  ? "bg-gray-400 text-white cursor-not-allowed"
+                  : "bg-green-500 text-white hover:bg-green-600"
+              }`}
+            >
+              {booked ? "Already Booked" : "Book Now"}
+            </button>
 
+            {/* FAVORITE */}
+            {!favorite ? (
+              <button
+                onClick={handleFavorite}
+                className="px-5 py-3 rounded-xl border border-green-500 text-green-500"
+              >
+                Add to Favorites ❤️
+              </button>
+            ) : (
+              <button
+                onClick={handleUnFavorite}
+                className="px-5 py-3 rounded-xl border border-red-500 text-red-500"
+              >
+                Remove Favorite
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* EXTRA */}
+      <div className="mt-10 grid md:grid-cols-3 gap-4">
+        <div className="p-5 border rounded-2xl">
+          <h3 className="font-bold">🔥 High Intensity</h3>
+          <p className="text-sm text-gray-500">Push your limits safely</p>
+        </div>
+
+        <div className="p-5 border rounded-2xl">
+          <h3 className="font-bold">🏋️ Expert Trainer</h3>
+          <p className="text-sm text-gray-500">Certified professionals</p>
+        </div>
+
+        <div className="p-5 border rounded-2xl">
+          <h3 className="font-bold">📈 Progress Tracking</h3>
+          <p className="text-sm text-gray-500">Track your fitness growth</p>
         </div>
       </div>
     </div>
   );
-}
+};
 
-// -----------------------------
-// INFO COMPONENT
-// -----------------------------
-function Info({ title, value }) {
-  return (
-    <div className="border dark:border-gray-700 rounded-xl p-4">
-      <h3 className="font-semibold text-gray-700 dark:text-gray-300">
-        {title}
-      </h3>
-      <p className="text-gray-900 dark:text-white">{value}</p>
-    </div>
-  );
-}
+export default ClassDetailsPage;
