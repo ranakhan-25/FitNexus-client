@@ -35,7 +35,6 @@ export default function ProfilePage() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  //update
   const handleUpdate = async (e) => {
   e.preventDefault();
   setLoading(true);
