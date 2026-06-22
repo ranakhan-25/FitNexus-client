@@ -64,7 +64,7 @@ export default function ApplyTrainerPage() {
 
   return (
     <div className="max-w-4xl mx-auto space-y-6 p-5">
-      {/* Header */}
+      
 
       <div className="bg-gradient-to-r from-green-500 to-emerald-600 rounded-3xl p-8 text-white">
         <h1 className="text-3xl font-bold">Become a Trainer</h1>
