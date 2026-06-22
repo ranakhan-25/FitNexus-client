@@ -1,8 +1,7 @@
 "use client";
 
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState} from "react";
 import { authClient } from "@/lib/auth-client";
-import { toast } from "react-toastify";
 
 const TrainerOverview = () => {
   const { data: session } = authClient.useSession();
