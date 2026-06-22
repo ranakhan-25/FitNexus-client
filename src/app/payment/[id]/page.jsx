@@ -93,7 +93,6 @@ export default function BookingPage() {
 
   
 
-  // ❌ 4. Graceful Error Interface (Error State)
   if (error || !classData) {
     return (
       <div className="max-w-md mx-auto p-6 mt-20 text-center">
@@ -113,7 +112,6 @@ export default function BookingPage() {
   }
 
 
-  // 💻 6. Primary Interactive Interface (Main UI)
   return (
     <div className="max-w-xl mx-auto p-4 md:p-6 mt-10 transition-colors duration-300">
       <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-xl p-6 md:p-8">
