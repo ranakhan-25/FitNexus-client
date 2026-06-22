@@ -226,7 +226,7 @@ export default function AppliedTrainersPage() {
                     <td className="py-4 px-6 whitespace-nowrap">
                       <div className="flex items-center gap-3">
                         <Image
-                          src={trainer?.profileImage || "/avatar.png"}
+                          src={trainer?.image || "/avatar.png"}
                           width={40}
                           height={40}
                           alt={trainer.name}

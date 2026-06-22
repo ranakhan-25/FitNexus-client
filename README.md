@@ -1,36 +1,46 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# 🏋️‍♂️ FlexPulse — Fitness & Gym Management Platform (Client Side)
 
-## Getting Started
+## 📌 Project Summary
+FlexPulse is a premium, next-generation multi-vendor fitness platform engineered to bridge the gap between fitness enthusiasts, certified trainers, and gym administrators. Built with a focus on polished aesthetics and fluid user experience, the system allows members to discover curated fitness classes, book sessions through secure credit card checkouts, and actively participate in a community discussion forum. Trainers can seamlessly manage schedules and list programs, while administrators maintain comprehensive governance over platform roles, transactions, and content moderation—all powered by a fast, secure, and reactive single-page architecture.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 🚀 Live Links & Resources
+- **Live Deployment URL:** [https://fitnexus-client.vercel.app/]
+- **Server Repository:** [https://github.com/ranakhan-25/fitNexus-server]
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+## ✨ Key Features
+- **Role-Based Access Control (RBAC):** Distinct dashboards, sidebars, and tailored features for standard Users, Trainers, and Admins.
+- **Better Auth Integration:** Flawless credential-based registration and secure Google Social login with strict password rules.
+- **Stripe Checkout Pipeline:** Secure payment mechanism verifying double-booking prevention in real-time before handling transactions.
+- **Advanced Searching & Sorting:** Live server-side regex search by Class Name and Multi-category filtering operations.
+- **Community Forum Moderation:** Paginated interactive discussion board featuring upvote/downvote capabilities, comment creation, and custom layout.
+- **Dynamic Analytics Dashboard:** Visual graphs and metrics tracking built with interactive tracking systems.
+- **Adaptive Dark / Light Theme Toggle:** Clean user preference synchronization mapping natively with system preferences.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## 🛠️ Tech Stack & Packages Used
 
-To learn more about Next.js, take a look at the following resources:
+### Core Framework & Design
+- **Next.js** (App Router architecture)
+- **React**
+- **Tailwind CSS**
+- **DaisyUI**
+- **HeroUI** (Formerly NextUI)
+- **Framer Motion** (Micro-interactions and section transitions)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Authentication & Database Adapter
+- **Better Auth**
+- **@better-auth/mongo-adapter**
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Payments & State Tracking
+- **Stripe Client SDK** (@stripe/react-stripe-js & @stripe/stripe-js)
+- **Recharts** (Visual dashboard tracking and graphs)
+- **React Toastify** (Non-blocking notification alerts)
+- **Lucide Icons** & **React Icons**
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.

@@ -5,10 +5,13 @@ import Link from "next/link";
 import Image from "next/image";
 import { toast } from "react-toastify";
 import { MessageSquare, Calendar, User, ArrowUpRight } from "lucide-react";
+import { authClient } from "@/lib/auth-client";
 
 export default function LatestForumPosts() {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { data: session } = authClient.useSession()
+  const user = session?.user;
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -148,12 +151,21 @@ export default function LatestForumPosts() {
 
               {/* ACTION BUTTON */}
               <div className="pt-5 mt-4 border-t border-slate-100 dark:border-slate-800/40">
-                <Link
+                
+                {
+                  user ? <Link
                   href={`/forum/${post._id}`}
                   className="w-full inline-flex items-center justify-center bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-semibold py-3 rounded-2xl transition-all shadow-md hover:shadow-lg hover:shadow-indigo-500/20 active:scale-[0.99] text-sm"
                 >
                   Read Discussion
+                </Link> :  <Link
+                  href={`/unauthorized`}
+                  className="w-full inline-flex items-center justify-center bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-semibold py-3 rounded-2xl transition-all shadow-md hover:shadow-lg hover:shadow-indigo-500/20 active:scale-[0.99] text-sm"
+                >
+                  Read Discussion
                 </Link>
+                }
+                
               </div>
 
             </div>

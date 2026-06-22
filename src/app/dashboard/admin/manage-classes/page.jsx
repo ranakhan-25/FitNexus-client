@@ -17,9 +17,12 @@ export default function ManageClassesPage() {
   // fetch classes
   const fetchClasses = async () => {
     try {
+      const token = await getToken()
       setLoading(true);
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/admin/classes`,
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/admin/classes`, {
+          headers:{ authorization: `Bearer ${token}`,}
+        }
       );
       const data = await res.json();
       setClasses(data.data || []);

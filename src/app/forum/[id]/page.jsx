@@ -27,7 +27,7 @@ const ForumDetailsPage = () => {
       try {
         const token = await getToken()
         const res = await fetch(
-          `${process.env.NEXT_PUBLIC_SERVER_URL}/api/forum-post/${id}`, {
+          `${process.env.NEXT_PUBLIC_SERVER_URL}/api/forum-post/single/${id}`, {
             headers: {
               authorization: `Bearer ${token}`,
             }
@@ -36,6 +36,7 @@ const ForumDetailsPage = () => {
 
         const data = await res.json();
 
+        console.log(data)
         if (!data.success) throw new Error(data.message);
 
         setPost(data.post);
@@ -283,7 +284,7 @@ const ForumDetailsPage = () => {
     <div className="max-w-4xl mx-auto p-6 space-y-6">
       {/* IMAGE */}
       <Image
-        src={post?.image || "image.png"}
+        src={post?.image || "/image.png"}
         width={800}
         height={400}
         className="w-full rounded-2xl"

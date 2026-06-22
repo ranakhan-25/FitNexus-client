@@ -14,13 +14,21 @@ export default function FavoritePage() {
   const [favorites, setFavorites] = useState([]);
   const [loading, setLoading] = useState(true);
 
+
   useEffect(() => {
     if (!session?.user?.email) return;
 
     const fetchFavorites = async () => {
       try {
+
+        const token = await getToken()
+
         const res = await fetch(
-          `${process.env.NEXT_PUBLIC_SERVER_URL}/api/favorites/${session.user.email}`
+          `${process.env.NEXT_PUBLIC_SERVER_URL}/api/favorites/${session.user.email}`, {
+            headers: {
+              authorization: `Bearer ${token}`,
+            }
+          }
         );
 
         const data = await res.json();
@@ -38,26 +46,23 @@ export default function FavoritePage() {
     fetchFavorites();
   }, [session]);
 
-  
   const handleDelete = async (id) => {
     try {
-      const token = await getToken()
+      const token = await getToken();
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_SERVER_URL}/api/favorites/${id}`,
         {
           method: "DELETE",
           headers: {
             authorization: `Bearer ${token}`,
-          }
-        }
+          },
+        },
       );
 
       const data = await res.json();
 
       if (data.success) {
-        setFavorites((prev) =>
-          prev.filter((item) => item._id !== id)
-        );
+        setFavorites((prev) => prev.filter((item) => item._id !== id));
 
         toast.success("Removed from favorites");
       }
@@ -83,22 +88,18 @@ export default function FavoritePage() {
             Favorite Classes
           </h1>
 
-          <p className="text-gray-500 mt-2">
-            Your saved fitness classes
-          </p>
+          <p className="text-gray-500 mt-2">Your saved fitness classes</p>
         </div>
 
         <div className="bg-gradient-to-r from-pink-500 to-rose-600 text-white px-6 py-4 rounded-2xl">
           <p className="text-pink-100">Total Favorites</p>
 
-          <h2 className="text-3xl font-bold">
-            {favorites.length}
-          </h2>
+          <h2 className="text-3xl font-bold">{favorites?.length || 0}</h2>
         </div>
       </div>
 
       {/* Empty State */}
-      {favorites.length === 0 ? (
+      {favorites.length <= 0 ? (
         <div className="text-center py-20">
           <Heart className="mx-auto text-gray-400" size={60} />
 
@@ -134,9 +135,7 @@ export default function FavoritePage() {
                   {item.className}
                 </h2>
 
-                <p className="text-gray-500">
-                  Trainer: {item.trainerName}
-                </p>
+                <p className="text-gray-500">Trainer: {item.trainerName}</p>
 
                 {/* Actions */}
                 <div className="flex gap-3 mt-4">

@@ -14,8 +14,13 @@ export default function ManageTrainersPage() {
   // fetch trainers
   const fetchTrainers = async () => {
     try {
+      const token = await getToken()
       setLoading(true);
-      const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/admin/trainers`);
+      const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/admin/trainers`, {
+        headers: {
+          authorization: `Bearer ${token}`,
+        }
+      });
       const data = await res.json();
       setTrainers(data.data || []);
     } catch (err) {

@@ -43,39 +43,38 @@ const AdminOverviewPage = () => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-screen text-gray-500">
+      <div className="flex items-center justify-center h-screen text-gray-500 bg-gray-50 dark:bg-gray-950">
         Loading dashboard...
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-black text-white p-6 pb-10">
+    <div className="min-h-screen bg-gray-50 dark:bg-gradient-to-br dark:from-gray-950 dark:via-gray-900 dark:to-black text-gray-900 dark:text-white p-6 pb-10 transition-colors duration-300">
 
       {/* HEADER */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
-
         <div>
-          <h1 className="text-3xl font-bold">Admin Dashboard</h1>
-          <p className="text-gray-400">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Admin Dashboard</h1>
+          <p className="text-gray-500 dark:text-gray-400">
             Overview of platform performance
           </p>
         </div>
 
         {/* ADMIN PROFILE CARD */}
-        <div className="flex items-center gap-4 bg-white/10 backdrop-blur-md px-5 py-3 rounded-2xl border border-white/10 shadow-lg">
-
+       
+        <div className="flex items-center gap-4 bg-white dark:bg-white/10 backdrop-blur-md px-5 py-3 rounded-2xl border border-gray-200 dark:border-white/10 shadow-md dark:shadow-lg">
           <Image
             src={user?.image || "/avatar.png"}
             alt="admin"
-            width={10}
-            height={10}
-            className="w-12 h-12 rounded-full object-cover border-2 border-green-400"
+            width={48} 
+            height={48}
+            className="w-12 h-12 rounded-full object-cover border-2 border-green-500"
           />
 
           <div>
-            <p className="font-semibold">{user?.name}</p>
-            <span className="text-xs px-2 py-1 bg-green-500 rounded-full">
+            <p className="font-semibold text-gray-900 dark:text-white">{user?.name}</p>
+            <span className="text-xs px-2 py-0.5 font-medium bg-green-500 text-white rounded-full">
               ADMIN
             </span>
           </div>
@@ -85,29 +84,32 @@ const AdminOverviewPage = () => {
       {/* STATS GRID */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
 
-        {/* USERS */}
-        <div className="p-6 rounded-2xl bg-gradient-to-br from-blue-600/20 to-blue-900/20 border border-blue-500/30 shadow-lg hover:scale-[1.02] transition">
-          <h2 className="text-gray-300">Total Users</h2>
-          <p className="text-4xl font-bold mt-2">{stats.users}</p>
-          <p className="text-sm text-gray-400 mt-1">Registered members</p>
+        {/* USERS CARD */}
+        <div className="p-6 rounded-2xl bg-blue-50 dark:bg-gradient-to-br dark:from-blue-600/20 dark:to-blue-900/20 border border-blue-200 dark:border-blue-500/30 shadow-md dark:shadow-lg hover:scale-[1.02] transition">
+          <h2 className="text-gray-600  font-medium">Total Users</h2>
+          <p className="text-4xl font-bold mt-2 text-blue-600 dark:text-blue-400">{stats.users}</p>
+          <p className="text-sm text-gray-500  mt-1">Registered members</p>
         </div>
 
-        {/* CLASSES */}
-        <div className="p-6 rounded-2xl bg-gradient-to-br from-purple-600/20 to-purple-900/20 border border-purple-500/30 shadow-lg hover:scale-[1.02] transition">
-          <h2 className="text-gray-300">Total Classes</h2>
-          <p className="text-4xl font-bold mt-2">{stats.classes}</p>
-          <p className="text-sm text-gray-400 mt-1">Active courses</p>
+        {/* CLASSES CARD */}
+        <div className="p-6 rounded-2xl bg-purple-50 dark:bg-gradient-to-br dark:from-purple-600/20 dark:to-purple-900/20 border border-purple-200 dark:border-purple-500/30 shadow-md dark:shadow-lg hover:scale-[1.02] transition">
+          <h2 className="text-gray-600  font-medium">Total Classes</h2>
+          <p className="text-4xl font-bold mt-2 text-purple-600 dark:text-purple-400">{stats.classes}</p>
+          <p className="text-sm text-gray-500  mt-1">Active courses</p>
         </div>
 
-        {/* BOOKINGS */}
-        <div className="p-6 rounded-2xl bg-gradient-to-br from-green-600/20 to-green-900/20 border border-green-500/30 shadow-lg hover:scale-[1.02] transition">
-          <h2 className="text-gray-300">Booked Classes</h2>
-          <p className="text-4xl font-bold mt-2">{stats.bookings}</p>
-          <p className="text-sm text-gray-400 mt-1">Total enrollments</p>
+        {/* BOOKINGS CARD */}
+        <div className="p-6 rounded-2xl bg-green-50 dark:bg-gradient-to-br dark:from-green-600/20 dark:to-green-900/20 border border-green-200 dark:border-green-500/30 shadow-md dark:shadow-lg hover:scale-[1.02] transition">
+          <h2 className="text-gray-600  font-medium">Booked Classes</h2>
+          <p className="text-4xl font-bold mt-2 text-green-600 dark:text-green-400">{stats.bookings}</p>
+          <p className="text-sm text-gray-500 ">Total enrollments</p>
         </div>
       </div>
 
-      <AdminAnalytics stats={stats} />
+      {/* ANALYTICS */}
+      <div className="mt-8">
+        <AdminAnalytics stats={stats} />
+      </div>
     </div>
   );
 };

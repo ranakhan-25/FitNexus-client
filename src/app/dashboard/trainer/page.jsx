@@ -36,7 +36,6 @@ const TrainerOverview = () => {
           setStats((prev) => ({ ...prev, loading: false }));
         }
       } catch (error) {
-        console.log(error);
         setStats((prev) => ({ ...prev, loading: false }));
       }
     };
@@ -145,9 +144,8 @@ const TrainerOverview = () => {
                         Enrolled
                       </span>
                     </td>
-
                     <td className="p-3 text-gray-500 dark:text-gray-400">
-                      {new Date(s.createdAt).toLocaleDateString()}
+                      {new Date(s.bookingDate).toLocaleDateString()}
                     </td>
                   </tr>
                 ))

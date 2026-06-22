@@ -4,11 +4,15 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Search } from "lucide-react";
+import { authClient } from "@/lib/auth-client";
 
 const AllClassesPage = () => {
   const [classes, setClasses] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const { data: session } = authClient.useSession();
+
+  const user = session?.user;
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("");
 
@@ -253,12 +257,21 @@ const AllClassesPage = () => {
                       </p>
                     </div>
 
-                    <Link
-                      href={`/classes/${item._id}`}
-                      className="block mt-6 text-center bg-green-500 hover:bg-green-600 text-white py-3 rounded-xl font-medium transition"
-                    >
-                      View Details
-                    </Link>
+                    {user ? (
+                      <Link
+                        href={`/classes/${item._id}`}
+                        className="block mt-6 text-center bg-green-500 hover:bg-green-600 text-white py-3 rounded-xl font-medium transition"
+                      >
+                        View Details
+                      </Link>
+                    ) : (
+                      <Link
+                        href={`/unauthorized`}
+                        className="block mt-6 text-center bg-green-500 hover:bg-green-600 text-white py-3 rounded-xl font-medium transition"
+                      >
+                        View Details
+                      </Link>
+                    )}
                   </div>
                 </div>
               ))}

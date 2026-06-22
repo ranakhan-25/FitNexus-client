@@ -3,6 +3,7 @@
 import { getToken } from "@/components/service/getToken";
 import { authClient } from "@/lib/auth-client";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
@@ -10,6 +11,7 @@ const AddClassPage = () => {
   const { data: session } = authClient.useSession();
   const user = session?.user;
 
+  const router = useRouter()
   const [formData, setFormData] = useState({
     trainerId: "",
     trainerName: "",
@@ -115,6 +117,7 @@ const AddClassPage = () => {
 
       setFile(null);
       setPreview(null);
+      router.refresh()
     } catch (err) {
       toast.error(err.message);
     } finally {

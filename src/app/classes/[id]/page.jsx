@@ -24,8 +24,14 @@ const ClassDetailsPage = () => {
   useEffect(() => {
     const fetchClass = async () => {
       try {
+        const token = await getToken();
         const res = await fetch(
           `${process.env.NEXT_PUBLIC_SERVER_URL}/api/classes/${id}`,
+          {
+            headers: {
+              authorization: `Bearer ${token}`,
+            },
+          },
         );
 
         const data = await res.json();

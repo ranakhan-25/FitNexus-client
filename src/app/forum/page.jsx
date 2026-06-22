@@ -3,11 +3,13 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { authClient } from "@/lib/auth-client";
 
 const CommunityForumPage = () => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
-
+  const { data: session } = authClient.useSession()
+  const user = session?.user;
   const [search, setSearch] = useState("");
   const [role, setRole] = useState("");
   const [page, setPage] = useState(1);
@@ -171,12 +173,19 @@ const CommunityForumPage = () => {
                 </div>
 
                 {/* READ MORE */}
-                <Link
+
+                {user ? <Link
                   href={`/forum/${post._id}`}
                   className="block text-center bg-green-500 hover:bg-green-600 text-white py-2 rounded-xl"
                 >
                   Read More
-                </Link>
+                </Link> : <Link
+                  href={`/unauthorized`}
+                  className="block text-center bg-green-500 hover:bg-green-600 text-white py-2 rounded-xl"
+                >
+                  Read More
+                </Link>}
+                
 
               </div>
             </div>

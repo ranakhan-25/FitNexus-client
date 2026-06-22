@@ -15,9 +15,14 @@ export default function ManageForumPostsPage() {
   const fetchPosts = async () => {
     try {
       setLoading(true);
-      // BUG FIX: process.env যুক্ত করা হয়েছে
+      const token = await getToken();
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_SERVER_URL}/api/admin/forum-posts`,
+        {
+          headers: {
+            authorization: `Bearer ${token}`,
+          },
+        },
       );
       const data = await res.json();
 

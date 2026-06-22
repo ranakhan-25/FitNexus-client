@@ -25,7 +25,7 @@ const BookedClassesPage = () => {
     const fetchClasses = async () => {
       try {
         const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/bookings/${session.user.email}`
+          `${process.env.NEXT_PUBLIC_SERVER_URL}/api/bookings/${session.user.email}`
         );
 
         const data = await res.json();

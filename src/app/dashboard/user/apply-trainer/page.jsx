@@ -6,12 +6,13 @@ import { Award, Dumbbell, Loader2, Send } from "lucide-react";
 import { toast } from "react-toastify";
 import Image from "next/image";
 import { getToken } from "@/components/service/getToken";
+import { useRouter } from "next/navigation";
 
 export default function ApplyTrainerPage() {
   const { data: session } = authClient.useSession();
 
   const user = session?.user;
-
+  const router = useRouter()
   const [loading, setLoading] = useState(false);
 
   const [formData, setFormData] = useState({
@@ -52,6 +53,7 @@ export default function ApplyTrainerPage() {
       }
 
       toast.success("Application Submitted");
+      router.refresh()
     } catch (error) {
       // console.log(error);
       toast.error("Something went wrong");
@@ -77,10 +79,10 @@ export default function ApplyTrainerPage() {
       <div className="bg-white dark:bg-zinc-900 rounded-3xl border dark:border-zinc-800 p-6">
         <div className="flex items-center gap-4">
           <Image
-            src={user?.image || "image.png"}
+            src={user?.image || "/image.png"}
             alt=""
-            width={12}
-            height={12}
+            width={100}
+            height={100}
             className="w-16 h-16 rounded-full"
           />
 

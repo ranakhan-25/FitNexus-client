@@ -18,12 +18,16 @@ const MyClassesPage = () => {
   const [selectedClass, setSelectedClass] = useState(null);
   const [students, setStudents] = useState([]);
 
-
   useEffect(() => {
     const fetchClasses = async () => {
       try {
+        const token = await getToken()
         const res = await fetch(
-          `${process.env.NEXT_PUBLIC_SERVER_URL}/api/classes?trainerId=${trainerId}`,
+          `${process.env.NEXT_PUBLIC_SERVER_URL}/api/classes?trainerId=${trainerId}`, {
+            headers: {
+              authorization: `Bearer ${token}`,
+            }
+          }
         );
         const data = await res.json();
 
@@ -37,6 +41,7 @@ const MyClassesPage = () => {
 
     if (trainerId) fetchClasses();
   }, [trainerId]);
+
 
   const handleDelete = async (id) => {
     const confirm = window.confirm("Are you sure?");
@@ -104,10 +109,17 @@ const MyClassesPage = () => {
   // =========================
   // VIEW STUDENTS
   // =========================
+
   const viewStudents = async (classId) => {
     try {
+      const token = await getToken()
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/bookings/class/${classId}`,
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/bookings/trainer/classes/${classId}`,
+        {
+          headers: {
+            authorization: `Bearer ${token}`,
+          }
+        }
       );
 
       const data = await res.json();
@@ -200,8 +212,7 @@ const MyClassesPage = () => {
             ) : (
               students.map((s, i) => (
                 <div key={i} className="border-b py-2">
-                  <p>{s.userName}</p>
-                  <p className="text-sm text-gray-500">{s.email}</p>
+                  <p className="text-sm text-gray-500">{s.userEmail}</p>
                 </div>
               ))
             )}

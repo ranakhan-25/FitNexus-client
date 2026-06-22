@@ -3,6 +3,7 @@
 import { getToken } from "@/components/service/getToken";
 import { authClient } from "@/lib/auth-client";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "react-toastify";
 
@@ -10,7 +11,7 @@ const AddForumPostPage = () => {
   const { data: session } = authClient.useSession();
 
   const user = session?.user;
-
+  const router = useRouter()
   const [loading, setLoading] = useState(false);
   const [file, setFile] = useState(null);
   const [preview, setPreview] = useState("");
@@ -99,7 +100,7 @@ const AddForumPostPage = () => {
 
       const data = await res.json();
 
-      if (!data.success) {
+      if (!data) {
         throw new Error(data.message);
       }
 
@@ -112,6 +113,8 @@ const AddForumPostPage = () => {
 
       setFile(null);
       setPreview("");
+
+      router.refresh()
     } catch (error) {
       toast.error(error.message);
     } finally {

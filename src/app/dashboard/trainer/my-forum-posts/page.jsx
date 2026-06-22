@@ -24,9 +24,16 @@ const MyForumPostsPage = () => {
 
   const fetchMyPosts = async () => {
     try {
-      const res = await fetch(`
-${process.env.NEXT_PUBLIC_SERVER_URL}/api/forum-posts/${userId}
-`);
+      if (!userId) return;
+      const token = await getToken();
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/forum-posts/${userId}`,
+        {
+          headers: {
+            authorization: `Bearer ${token}`,
+          },
+        },
+      );
 
       const data = await res.json();
 
@@ -49,7 +56,7 @@ ${process.env.NEXT_PUBLIC_SERVER_URL}/api/forum-posts/${userId}
 
     if (!confirmed) return;
 
-    const token = await getToken()
+    const token = await getToken();
     try {
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_SERVER_URL}/api/forum-posts/${id}`,
@@ -57,7 +64,7 @@ ${process.env.NEXT_PUBLIC_SERVER_URL}/api/forum-posts/${userId}
           method: "DELETE",
           headers: {
             authorization: `Bearer ${token}`,
-          }
+          },
         },
       );
 

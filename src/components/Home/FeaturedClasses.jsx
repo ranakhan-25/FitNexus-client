@@ -5,10 +5,13 @@ import Link from "next/link";
 import Image from "next/image";
 import { toast } from "react-toastify";
 import { Flame, Clock, Tag, ArrowRight } from "lucide-react";
+import { authClient } from "@/lib/auth-client";
 
 export default function FeaturedClasses() {
   const [classes, setClasses] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { data: session } = authClient.useSession()
+  const user = session?.user;
 
   useEffect(() => {
     const fetchClasses = async () => {
@@ -142,12 +145,20 @@ export default function FeaturedClasses() {
                     </div>
                   </div>
 
-                  <Link
+                  {
+                    user ?<Link
                     href={`/classes/${cls._id}`}
                     className="block w-full text-center bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-semibold py-3 rounded-2xl transition-all shadow-md hover:shadow-lg hover:shadow-purple-500/20 active:scale-[0.99] text-sm"
                   >
                     View Details
+                  </Link> : <Link
+                    href={`/unauthorized`}
+                    className="block w-full text-center bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-semibold py-3 rounded-2xl transition-all shadow-md hover:shadow-lg hover:shadow-purple-500/20 active:scale-[0.99] text-sm"
+                  >
+                    View Details
                   </Link>
+                  }
+                  
                 </div>
               </div>
 
