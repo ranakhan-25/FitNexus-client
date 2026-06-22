@@ -54,16 +54,11 @@ const AllClassesPage = () => {
     }
   };
 
-  // =========================
-  // FETCH WHEN PAGE/FILTER CHANGE
-  // =========================
+ 
   useEffect(() => {
     fetchClasses();
   }, [page, category, search]);
 
-  // =========================
-  // SEARCH DEBOUNCE
-  // =========================
   useEffect(() => {
     const timer = setTimeout(() => {
       setPage(1);
