@@ -21,9 +21,7 @@ const AllClassesPage = () => {
 
   const limit = 6;
 
-  // =========================
-  // FETCH CLASSES
-  // =========================
+
   const fetchClasses = async () => {
     try {
       setLoading(true);
@@ -49,7 +47,7 @@ const AllClassesPage = () => {
         setClasses([]);
       }
     } catch (error) {
-      console.log("Frontend error:", error);
+      // console.log("Frontend error:", error);
       setClasses([]);
     } finally {
       setLoading(false);
