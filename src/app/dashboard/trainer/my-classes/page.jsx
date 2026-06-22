@@ -106,9 +106,7 @@ const MyClassesPage = () => {
     }
   };
 
-  // =========================
-  // VIEW STUDENTS
-  // =========================
+ 
 
   const viewStudents = async (classId) => {
     try {
