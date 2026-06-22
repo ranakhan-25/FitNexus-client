@@ -21,9 +21,12 @@ import { Button, Drawer } from "@heroui/react";
 import { Bars } from "@gravity-ui/icons";
 import { authClient } from "@/lib/auth-client";
 import ActiveLink from "../service/ActiveLink";
+import { useRouter } from "next/navigation";
 
 const DashboardSideBar = () => {
   const { data: session, isPending } = authClient.useSession();
+
+  const router = useRouter()
 
   const userMenuItems = [
     { title: "Overview", href: "/dashboard/user", icon: LayoutDashboardIcon },
@@ -143,7 +146,7 @@ const DashboardSideBar = () => {
       {/* Desktop Sidebar */}
       <div className="min-w-65 hidden lg:block bg-background text-foreground border-r border-border px-2">
         {/* Profile */}
-        <div className="flex items-center gap-3 py-3">
+        <div className="flex items-center gap-3 py-3 cursor-pointer" onClick={()=>router.push("/profile")}>
           {user?.image ? (
             <Image
               src={user?.image || "image.png"}

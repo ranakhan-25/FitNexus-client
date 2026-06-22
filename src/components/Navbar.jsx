@@ -38,6 +38,10 @@ export default function Navbar() {
     });
   }
 
+  const handelProfile = () => {
+    router.push("/profile")
+    setOpen(false)
+  }
   const handelLogOut = async () => {
     const result = await authClient.signOut();
     if (result) {
@@ -88,7 +92,7 @@ export default function Navbar() {
             <ThemeToggle />
 
             {
-              !isPending ? user ? <div>
+              !isPending ? user ? <div onClick={handelProfile} className=" cursor-pointer">
                 {
                   user?.image ? <Image src={user?.image || "https://i.ibb.co.com/bM2cWSNY/fevicon-icon.jpg"} alt={user?.name} width={25} height={25} className="rounded-full w-10 h-10"/> : <p>{UserWord}</p>
                 }
@@ -147,7 +151,7 @@ export default function Navbar() {
               {
                 !isPending ? user ? <div>
                   {
-                    user?.image ? <div className="flex items-center gap-2">
+                    user?.image ? <div onClick={handelProfile} className="flex items-center gap-2 cursor-pointer">
                       <Image src={user?.image || "https://i.ibb.co.com/bM2cWSNY/fevicon-icon.jpg"} alt={user?.name} width={25} height={25} className="rounded-full w-10 h-10" />
                       <h1 className="font-bold text-xl">{user?.name}</h1>
                   </div> : <p>{UserWord}</p>
