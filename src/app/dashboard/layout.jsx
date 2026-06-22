@@ -4,7 +4,7 @@ import React from 'react'
 
 const UserLayout = async ({children}) => {
   return (
-    <div className=' md:flex'>
+    <div className=' md:flex max-w-7xl mx-auto'>
       <DashboardSideBar/>
       <div className='flex-1'>{children}</div>
     </div>
