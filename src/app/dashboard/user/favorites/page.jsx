@@ -14,21 +14,20 @@ export default function FavoritePage() {
   const [favorites, setFavorites] = useState([]);
   const [loading, setLoading] = useState(true);
 
-
   useEffect(() => {
     if (!session?.user?.email) return;
 
     const fetchFavorites = async () => {
       try {
-
-        const token = await getToken()
+        const token = await getToken();
 
         const res = await fetch(
-          `${process.env.NEXT_PUBLIC_SERVER_URL}/api/favorites/${session.user.email}`, {
+          `${process.env.NEXT_PUBLIC_SERVER_URL}/api/favorites/${session.user.email}`,
+          {
             headers: {
               authorization: `Bearer ${token}`,
-            }
-          }
+            },
+          },
         );
 
         const data = await res.json();
@@ -71,6 +70,7 @@ export default function FavoritePage() {
     }
   };
 
+
   if (loading) {
     return (
       <div className="h-[70vh] flex justify-center items-center">
@@ -81,7 +81,7 @@ export default function FavoritePage() {
 
   return (
     <div className="space-y-8 p-5">
-      {/* Header */}
+     
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-3xl font-bold dark:text-white">
