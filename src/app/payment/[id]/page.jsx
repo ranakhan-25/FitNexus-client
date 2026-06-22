@@ -91,8 +91,6 @@ export default function BookingPage() {
   }
 };
 
-  
-
   if (error || !classData) {
     return (
       <div className="max-w-md mx-auto p-6 mt-20 text-center">
