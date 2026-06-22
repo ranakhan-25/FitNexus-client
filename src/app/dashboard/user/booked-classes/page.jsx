@@ -43,6 +43,7 @@ const BookedClassesPage = () => {
     fetchClasses();
   }, [session]);
 
+  
   const filteredClasses = useMemo(() => {
     return classes.filter((item) =>
       item.className
