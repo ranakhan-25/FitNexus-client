@@ -182,6 +182,7 @@ const MyForumPostsPage = () => {
               key={post._id}
               className="bg-white dark:bg-gray-900 rounded-3xl overflow-hidden border shadow-sm hover:shadow-xl transition-all duration-300"
             >
+              
               <Image
                 src={post.image}
                 alt={post.title}
@@ -208,7 +209,7 @@ const MyForumPostsPage = () => {
 
                     <div className="flex items-center gap-1">
                       <MessageSquare size={16} />
-                      {post.commentsCount || 0}
+                      {post?.comments?.length || 0}
                     </div>
                   </div>
 
