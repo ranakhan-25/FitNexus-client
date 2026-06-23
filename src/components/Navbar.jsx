@@ -123,7 +123,7 @@ export default function Navbar() {
       </div>
 
       {/* Mobile Drawer */}
-      <AnimatePresence>
+      <AnimatePresence onClick={()=>setOpen(false)}>
         {open && (
           <motion.div
             initial={{ opacity: 0, y: -30 }}

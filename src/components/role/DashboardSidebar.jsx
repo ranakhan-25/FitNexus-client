@@ -22,11 +22,12 @@ import { Bars } from "@gravity-ui/icons";
 import { authClient } from "@/lib/auth-client";
 import ActiveLink from "../service/ActiveLink";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 const DashboardSideBar = () => {
   const { data: session, isPending } = authClient.useSession();
 
-  const router = useRouter()
+  const router = useRouter();
 
   const userMenuItems = [
     { title: "Overview", href: "/dashboard/user", icon: LayoutDashboardIcon },
@@ -146,7 +147,10 @@ const DashboardSideBar = () => {
       {/* Desktop Sidebar */}
       <div className="min-w-65 hidden lg:block bg-background text-foreground border-r border-border px-2">
         {/* Profile */}
-        <div className="flex items-center gap-3 py-3 cursor-pointer" onClick={()=>router.push("/profile")}>
+        <div
+          className="flex items-center gap-3 py-3 cursor-pointer"
+          onClick={() => router.push("/profile")}
+        >
           {user?.image ? (
             <Image
               src={user?.image || "image.png"}
@@ -177,20 +181,26 @@ const DashboardSideBar = () => {
       </div>
 
       {/* Mobile Drawer */}
+
       <Drawer>
-        <Button className="lg:hidden my-2 mx-5" variant="secondary">
+        <Button
+          className="lg:hidden my-2 mx-5"
+          variant="secondary"
+        >
           <Bars />
           Sidebar
         </Button>
 
-        <Drawer.Backdrop>
-          <Drawer.Content placement="left">
-            <Drawer.Dialog className="bg-background text-foreground mt-20 border-r border-border">
-              <Drawer.CloseTrigger />
-              <Drawer.Body>{navContent}</Drawer.Body>
-            </Drawer.Dialog>
-          </Drawer.Content>
-        </Drawer.Backdrop>
+       
+          <Drawer.Backdrop>
+            <Drawer.Content placement="left">
+              <Drawer.Dialog className="bg-background text-foreground mt-20 border-r border-border">
+                <Drawer.CloseTrigger />
+                <Drawer.Body>{navContent}</Drawer.Body>
+              </Drawer.Dialog>
+            </Drawer.Content>
+          </Drawer.Backdrop>
+      
       </Drawer>
     </>
   );

@@ -178,7 +178,7 @@ export default function RegisterPage() {
             <Label className="text-sm font-medium">Select Role</Label>
 
             <div className="grid grid-cols-3 gap-2">
-              {["user", "trainer", "admin"].map((item) => (
+              {["user", "trainer"].map((item) => (
                 <label
                   key={item}
                   className={`text-center py-2 rounded-lg border cursor-pointer text-sm transition ${
