@@ -23,6 +23,7 @@ import { authClient } from "@/lib/auth-client";
 import ActiveLink from "../service/ActiveLink";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { ImProfile } from "react-icons/im";
 
 const DashboardSideBar = () => {
   const { data: session, isPending } = authClient.useSession();
@@ -45,6 +46,11 @@ const DashboardSideBar = () => {
       title: "Favorite Classes",
       href: "/dashboard/user/favorites",
       icon: Heart,
+    },
+    {
+      title: "My Profile",
+      href: "/profile",
+      icon: ImProfile,
     },
   ];
 
@@ -69,6 +75,11 @@ const DashboardSideBar = () => {
       title: "My Forum Posts",
       href: "/dashboard/trainer/my-forum-posts",
       icon: MessagesSquare,
+    },
+    {
+      title: "My Profile",
+      href: "/profile",
+      icon: ImProfile,
     },
   ];
 
@@ -108,6 +119,11 @@ const DashboardSideBar = () => {
       title: "Transactions",
       href: "/dashboard/admin/transactions",
       icon: Receipt,
+    },
+    {
+      title: "My Profile",
+      href: "/profile",
+      icon: ImProfile,
     },
   ];
 

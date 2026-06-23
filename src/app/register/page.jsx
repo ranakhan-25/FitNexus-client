@@ -177,10 +177,10 @@ export default function RegisterPage() {
           <div className="flex flex-col gap-2">
             <Label className="text-sm font-medium">Select Role</Label>
 
-            <div className="grid grid-cols-3 gap-2">
-              {["user", "trainer"].map((item) => (
+            <div className="grid grid-cols-2 gap-2">
+              {["user", "trainer"].map((item,i) => (
                 <label
-                  key={item}
+                  key={i}
                   className={`text-center py-2 rounded-lg border cursor-pointer text-sm transition ${
                     role === item
                       ? "bg-blue-500 text-white border-blue-500"
