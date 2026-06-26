@@ -10,7 +10,7 @@ import {
   FieldError,
 } from "@heroui/react";
 import Link from "next/link";
-import { authClient } from "@/lib/auth-client";
+import { authClient, getAppUrl } from "@/lib/auth-client";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 
@@ -25,23 +25,26 @@ export default function LoginPage() {
     const formData = new FormData(e.currentTarget);
     const userData = Object.fromEntries(formData.entries());
 
-    const { data, error } = await authClient.signIn.email({
+    const { error } = await authClient.signIn.email({
       email: userData.email,
       password: userData.password,
-      callbackURL: "/",
+      callbackURL: `${getAppUrl()}/`,
     });
 
     setLoading(false);
 
     if (error) {
-      return toast("Sign In is not successfully");
+      return toast.error("Wrong Email and Password");
     }
+
+    router.push("/");
   };
 
   // 🌐 Google login handler
   const handleGoogleLogin = async () => {
-    const data = await authClient.signIn.social({
+    await authClient.signIn.social({
       provider: "google",
+      callbackURL: `${getAppUrl()}/`,
     });
   };
 
@@ -94,7 +97,6 @@ export default function LoginPage() {
           >
             <Label>Password</Label>
             <Input placeholder="••••••••" />
-            <FieldError />
           </TextField>
 
           {/* LOGIN BUTTON */}
@@ -106,6 +108,9 @@ export default function LoginPage() {
             {loading ? "Logging in..." : "Login"}
           </Button>
 
+          <div>
+            <Link href="/forgot-password" className="text-sm text-green-600 underline">Forgot Password?</Link>
+          </div>
           {/* DIVIDER */}
           <div className="flex items-center gap-3 my-2">
             <div className="h-px bg-gray-300 dark:bg-gray-700 flex-1"></div>

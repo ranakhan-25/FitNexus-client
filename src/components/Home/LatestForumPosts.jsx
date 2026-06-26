@@ -63,7 +63,7 @@ export default function LatestForumPosts() {
           <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-purple-50 dark:bg-purple-500/10 text-purple-600 dark:text-purple-400 rounded-full text-xs font-semibold uppercase tracking-wider mb-2 border border-purple-100 dark:border-purple-500/20">
             <MessageSquare size={14} /> Community Pulse
           </div>
-          <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+          <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white tracking-tight">
             Latest Forum Discussions
           </h2>
         </div>
@@ -155,12 +155,12 @@ export default function LatestForumPosts() {
                 {
                   user ? <Link
                   href={`/forum/${post._id}`}
-                  className="w-full inline-flex items-center justify-center bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-semibold py-3 rounded-2xl transition-all shadow-md hover:shadow-lg hover:shadow-indigo-500/20 active:scale-[0.99] text-sm"
+                  className="w-full inline-flex items-center justify-center bg-linear-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-semibold py-3 rounded-2xl transition-all shadow-md hover:shadow-lg hover:shadow-indigo-500/20 active:scale-[0.99] text-sm"
                 >
                   Read Discussion
                 </Link> :  <Link
                   href={`/unauthorized`}
-                  className="w-full inline-flex items-center justify-center bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-semibold py-3 rounded-2xl transition-all shadow-md hover:shadow-lg hover:shadow-indigo-500/20 active:scale-[0.99] text-sm"
+                  className="w-full inline-flex items-center justify-center bg-linear-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-semibold py-3 rounded-2xl transition-all shadow-md hover:shadow-lg hover:shadow-indigo-500/20 active:scale-[0.99] text-sm"
                 >
                   Read Discussion
                 </Link>

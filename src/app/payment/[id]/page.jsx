@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { getToken } from "@/components/service/getToken";
 import { authClient } from "@/lib/auth-client";
+import { Loader2 } from "lucide-react";
 
 export default function BookingPage() {
   const { id } = useParams();
@@ -11,6 +12,7 @@ export default function BookingPage() {
 
   const [classData, setClassData] = useState(null);
   const [pageLoading, setPageLoading] = useState(true);
+  const [bookingLoading, setBookingLoading ] = useState(false);
   const [error, setError] = useState(null);
   const { data: session } = authClient.useSession();
 
@@ -23,7 +25,6 @@ export default function BookingPage() {
     const getClassData = async () => {
       try {
         const token = await getToken();
-        setPageLoading(true);
         setError(null);
         const res = await fetch(
           `${process.env.NEXT_PUBLIC_SERVER_URL}/api/bookings/class/${id}`,
@@ -50,61 +51,85 @@ export default function BookingPage() {
     getClassData();
   }, [id]);
 
+
   // 2. Handle Booking Creation
   const handleBooking = async () => {
-  if (!classData) return;
+    if (!classData) return;
+    setBookingLoading(true);
 
-  try {
-    setError(null);
+    try {
+      setError(null);
 
-    const token = await getToken();
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_SERVER_URL}/create-checkout-session`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          authorization: `Bearer ${token}`,
+      console.log(classData._id)
+      const token = await getToken();
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/create-checkout-session`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            classId: classData?._id,
+            classImage: classData?.image,
+            trainerId: classData?.trainerId,
+            trainerName: classData?.trainerName,
+            className: classData?.className,
+            price: classData?.price,
+            userId: user?._id || user?.id,
+            userEmail: user?.email,
+          }),
         },
-        body: JSON.stringify({
-          classId: classData?._id,
-          classImage: classData?.image,
-          trainerId: classData?.trainerId,
-          trainerName: classData?.trainerName,
-          className: classData?.className,
-          price: classData?.price,
-          userId: user?._id || user?.id, 
-          userEmail: user?.email,
-        }),
+      );
+
+      const data = await res.json();
+
+      if (res.ok && data.success && data.url) {
+        window.location.href = data.url;
+      } else {
+        setError(data.message || "Unable to complete booking request.");
       }
-    );
-
-    const data = await res.json();
-
-    if (res.ok && data.success && data.url) {
-      window.location.href = data.url;
-    } else {
-      setError(data.message || "Unable to complete booking request.");
-    }
-  } catch (err) {
-    setError("An unexpected error occurred during booking.");
+    } catch (err) {
+      setError("An unexpected error occurred during booking.");
+    } finally {
+    setBookingLoading(false);
   }
-};
+  };
+
+
+  if (pageLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <span className="loading loading-spinner loading-xl"></span>
+      </div>
+    );
+  }
 
   if (error || !classData) {
     return (
       <div className="max-w-md mx-auto p-6 mt-20 text-center">
-        <div className="bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/50 rounded-2xl p-6">
-          <p className="text-red-600 dark:text-red-400 font-medium mb-4">
-            {error || "Sorry, the requested class could not be found."}
-          </p>
-          <button
-            onClick={() => router.back()}
-            className="text-sm font-semibold text-zinc-700 dark:text-zinc-300 hover:underline transition"
-          >
-            ← Go Back
-          </button>
-        </div>
+        {error && (
+          <div className="bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/50 rounded-2xl p-6">
+            <p className="text-red-600 dark:text-red-400 font-medium mb-4">
+              {error || "Sorry, the requested class could not be found."}
+            </p>
+            <button
+              onClick={() => router.back()}
+              className="text-sm font-semibold text-zinc-700 dark:text-zinc-300 hover:underline transition"
+            >
+              ← Go Back
+            </button>
+          </div>
+        )}
+
+        {
+          pageLoading && <div className="h-[70vh] flex justify-center items-center">
+                  <Loader2 className="animate-spin w-10 h-10 text-green-500" />
+                </div>
+        }
+
+
       </div>
     );
   }
@@ -168,9 +193,10 @@ export default function BookingPage() {
         <div className="mt-8 space-y-3">
           <button
             onClick={handleBooking}
+            disabled={bookingLoading}
             className="w-full bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-medium py-3.5 px-4 rounded-xl shadow-lg shadow-blue-600/10 transition-all duration-200 disabled:opacity-50 disabled:pointer-events-none flex items-center justify-center gap-2 text-base"
           >
-            Book Now
+            {bookingLoading ? <Loader2 className="animate-spin" /> : "Book Now"}
           </button>
 
           <button

@@ -3,13 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { authClient } from "@/lib/auth-client";
-import {
-  Calendar,
-  Search,
-  Eye,
-  Loader2,
-  Dumbbell,
-} from "lucide-react";
+import { Calendar, Search, Eye, Loader2, Dumbbell } from "lucide-react";
 import { toast } from "react-toastify";
 
 const BookedClassesPage = () => {
@@ -43,12 +37,9 @@ const BookedClassesPage = () => {
     fetchClasses();
   }, [session]);
 
-  
   const filteredClasses = useMemo(() => {
     return classes.filter((item) =>
-      item.className
-        .toLowerCase()
-        .includes(search.toLowerCase())
+      item.className.toLowerCase().includes(search.toLowerCase()),
     );
   }, [search, classes]);
 
@@ -66,9 +57,7 @@ const BookedClassesPage = () => {
 
       <div className="flex flex-col lg:flex-row justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold dark:text-white">
-            Booked Classes
-          </h1>
+          <h1 className="text-3xl font-bold dark:text-white">Booked Classes</h1>
 
           <p className="text-gray-500 mt-2">
             View all your purchased fitness classes
@@ -76,13 +65,9 @@ const BookedClassesPage = () => {
         </div>
 
         <div className="bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-2xl px-6 py-4 min-w-[220px]">
-          <p className="text-green-100">
-            Total Booked Classes
-          </p>
+          <p className="text-green-100">Total Booked Classes</p>
 
-          <h2 className="text-4xl font-bold mt-2">
-            {classes.length}
-          </h2>
+          <h2 className="text-4xl font-bold mt-2">{classes.length}</h2>
         </div>
       </div>
 
@@ -90,10 +75,7 @@ const BookedClassesPage = () => {
 
       <div className="bg-white dark:bg-zinc-900 border dark:border-zinc-800 rounded-2xl p-4">
         <div className="relative">
-          <Search
-            size={18}
-            className="absolute left-4 top-3.5 text-gray-400"
-          />
+          <Search size={18} className="absolute left-4 top-3.5 text-gray-400" />
 
           <input
             type="text"
@@ -110,10 +92,7 @@ const BookedClassesPage = () => {
       <div className="bg-white dark:bg-zinc-900 border dark:border-zinc-800 rounded-3xl overflow-hidden shadow-sm">
         {filteredClasses.length === 0 ? (
           <div className="py-20 text-center">
-            <Dumbbell
-              className="mx-auto text-gray-400"
-              size={60}
-            />
+            <Dumbbell className="mx-auto text-gray-400" size={60} />
 
             <h3 className="text-xl font-semibold mt-5 dark:text-white">
               No Booked Classes Found
@@ -128,21 +107,15 @@ const BookedClassesPage = () => {
             <table className="w-full">
               <thead>
                 <tr className="bg-gray-50 dark:bg-zinc-800">
-                  <th className="text-left px-6 py-4 font-semibold">
-                    Class
-                  </th>
+                  <th className="text-left px-6 py-4 font-semibold">Class</th>
 
-                  <th className="text-left px-6 py-4 font-semibold">
-                    Trainer
-                  </th>
+                  <th className="text-left px-6 py-4 font-semibold">Trainer</th>
 
                   <th className="text-left px-6 py-4 font-semibold">
                     Schedule
                   </th>
 
-                  <th className="text-left px-6 py-4 font-semibold">
-                    Status
-                  </th>
+                  <th className="text-left px-6 py-4 font-semibold">Status</th>
 
                   <th className="text-center px-6 py-4 font-semibold">
                     Action
@@ -162,15 +135,11 @@ const BookedClassesPage = () => {
                           {item.className}
                         </h4>
 
-                        <p className="text-sm text-gray-500">
-                          Fitness Class
-                        </p>
+                        <p className="text-sm text-gray-500">Fitness Class</p>
                       </div>
                     </td>
 
-                    <td className="px-6 py-5">
-                      {item.trainerName}
-                    </td>
+                    <td className="px-6 py-5">{item.trainerName}</td>
 
                     <td className="px-6 py-5">
                       <div className="flex items-center gap-2">

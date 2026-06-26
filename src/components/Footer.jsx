@@ -6,8 +6,6 @@ const Footer = () => {
     <footer className="bg-gray-100 dark:bg-black border-t dark:border-gray-800 text-gray-700 dark:text-gray-300">
       
       <div className="max-w-7xl mx-auto px-6 py-12 grid grid-cols-1 md:grid-cols-4 gap-10">
-
-        {/* Logo + Description */}
         <div>
           <h1 className="text-2xl font-bold text-green-500">
             FitNexus
@@ -18,7 +16,6 @@ const Footer = () => {
           </p>
         </div>
 
-        {/* Quick Links */}
         <div>
           <h2 className="text-lg font-semibold mb-4">Quick Links</h2>
           <ul className="space-y-2 text-sm">
@@ -50,23 +47,21 @@ const Footer = () => {
           <h2 className="text-lg font-semibold mb-4">Follow Us</h2>
 
           <div className="flex gap-4 text-xl">
-            <a href="#" className="hover:text-green-500 transition">
+            <a href="https://www.facebook.com" className="hover:text-green-500 transition">
               <FaFacebookF />
             </a>
 
-            <a href="#" className="hover:text-green-500 transition">
+            <a href="https://www.instagram.com" className="hover:text-green-500 transition">
               <FaInstagram />
             </a>
 
-            <a href="#" className="hover:text-green-500 transition">
+            <a href="https://x.com" className="hover:text-green-500 transition">
               <FaXTwitter />
             </a>
           </div>
         </div>
 
       </div>
-
-      {/* Bottom Bar */}
       <div className="border-t dark:border-gray-800 py-4 text-center text-sm text-gray-500 dark:text-gray-400">
         © {new Date().getFullYear()} FitNexus. All rights reserved.
       </div>

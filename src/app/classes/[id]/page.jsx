@@ -20,7 +20,7 @@ const ClassDetailsPage = () => {
   const [booked, setBooked] = useState(false);
   const [favorite, setFavorite] = useState(false);
 
-  // FETCH CLASS DETAILS
+
   useEffect(() => {
     const fetchClass = async () => {
       try {
@@ -52,15 +52,15 @@ const ClassDetailsPage = () => {
     if (id) fetchClass();
   }, [id]);
 
-  // BOOK CLASS
+  
   const handleBookNow = () => {
     if (booked) {
       toast.error("You have already booked this class");
       return;
     }
-
     router.push(`/payment/${id}`);
   };
+
 
   // ADD FAVORITE
   const handleFavorite = async () => {
@@ -129,7 +129,7 @@ const ClassDetailsPage = () => {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        Loading class details...
+        <span className="loading loading-spinner loading-xl"></span>
       </div>
     );
   }

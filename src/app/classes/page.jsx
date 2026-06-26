@@ -47,7 +47,6 @@ const AllClassesPage = () => {
         setClasses([]);
       }
     } catch (error) {
-      // console.log("Frontend error:", error);
       setClasses([]);
     } finally {
       setLoading(false);
@@ -69,14 +68,14 @@ const AllClassesPage = () => {
 
   return (
     <div className="min-h-screen bg-white dark:bg-black">
-      {/* HERO */}
-      <section className="relative overflow-hidden pt-24 bg-gradient-to-br from-emerald-50 via-green-100 to-lime-100 dark:from-zinc-950 dark:via-zinc-900 dark:to-black transition-colors">
-        {/* Decorative blobs */}
+     
+      <section className="relative overflow-hidden pt-24 bg-linear-to-br from-emerald-50 via-green-100 to-lime-100 dark:from-zinc-950 dark:via-zinc-900 dark:to-black transition-colors">
+       
         <div className="absolute -top-24 -left-24 w-72 h-72 bg-emerald-300/30 dark:bg-emerald-500/10 rounded-full blur-3xl" />
         <div className="absolute -bottom-24 -right-24 w-72 h-72 bg-lime-300/30 dark:bg-lime-500/10 rounded-full blur-3xl" />
 
         <div className="relative max-w-7xl mx-auto px-4 text-center">
-          {/* Badge */}
+          
           <div
             className="inline-flex items-center gap-2 px-4 py-2 rounded-full 
       bg-white/70 dark:bg-white/10 backdrop-blur-md 
@@ -87,7 +86,7 @@ const AllClassesPage = () => {
 
           {/* Title */}
           <h1
-            className="text-4xl md:text-6xl font-extrabold leading-tight 
+            className="text-4xl md:text-6xl font-bold leading-tight 
       text-gray-900 dark:text-white"
           >
             Explore{" "}
@@ -119,7 +118,7 @@ const AllClassesPage = () => {
             </div>
           </div>
 
-          <div className="bg-white dark:bg-zinc-900 rounded-3xl border dark:border-zinc-800 p-5 mb-10 shadow-sm mt-10">
+          <div className="bg-white dark:bg-zinc-900 rounded border dark:border-zinc-800 p-2 mb-10 shadow-sm mt-10">
             <div className="flex flex-col lg:flex-row gap-4">
               {/* SEARCH */}
               <div className="relative flex-1">
@@ -133,7 +132,7 @@ const AllClassesPage = () => {
                   placeholder="Search classes..."
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  className="w-full h-12 pl-11 pr-4 rounded-xl border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 outline-none text-zinc-900 dark:text-white"
+                  className="w-full h-12 pl-11 pr-4 rounded border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 outline-none text-zinc-900 dark:text-white"
                 />
               </div>
 
@@ -165,7 +164,7 @@ const AllClassesPage = () => {
         </div>
       </section>
 
-      {/* CONTENT */}
+     
       <div className="max-w-7xl mx-auto px-4 py-10">
         {/* FILTER SECTION */}
 
@@ -181,7 +180,7 @@ const AllClassesPage = () => {
           </div>
         )}
 
-        {/* EMPTY */}
+       
         {!loading && classes.length === 0 && (
           <div className="text-center py-20">
             <h2 className="text-3xl font-bold">No Classes Found</h2>
@@ -195,11 +194,14 @@ const AllClassesPage = () => {
         {/* CLASSES GRID */}
         {!loading && classes.length > 0 && (
           <>
+            <div>
+              <h1 className="text-2xl font-bold mb-5 border-l-6 rounded-2xl border-red-500 pl-2">Choses you'r Classes</h1>
+            </div>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
               {classes.map((item) => (
                 <div
                   key={item._id}
-                  className="bg-white dark:bg-zinc-900 rounded-3xl overflow-hidden border dark:border-zinc-800 shadow-sm hover:shadow-xl transition-all"
+                  className="bg-white dark:bg-zinc-900 rounded-xl overflow-hidden border dark:border-zinc-800 shadow-sm hover:shadow-xl transition-all"
                 >
                   <Image
                     src={item.image}

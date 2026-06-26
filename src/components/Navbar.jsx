@@ -46,7 +46,7 @@ export default function Navbar() {
     const result = await authClient.signOut();
     if (result) {
       toast("LogOut Successfully")
-      router.push("/unauthorized")
+      router.push("/")
     }
     if (!result) {
       toast("LogOut is Filed !")

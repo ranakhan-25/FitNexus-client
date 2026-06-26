@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Sparkles, Shield, Zap, Target, ArrowRight, CheckCircle2 } from "lucide-react";
+import Link from "next/link";
 
 export default function InteractiveFeatureSection() {
   const [activeCard, setActiveCard] = useState(0);
@@ -13,7 +14,6 @@ export default function InteractiveFeatureSection() {
       title: "Ultra-Fast Performance",
       description: "Experience lightning-fast workout tracking and real-time synchronization with our edge-optimized network engine.",
       tag: "Speed",
-      // লাইট ও ডার্ক মোডের জন্য আলাদা আলাদা ডাইনামিক গ্রেডিয়েন্ট ব্যাকগ্রাউন্ড
       bgGradient: "from-amber-50 to-orange-50/30 dark:from-amber-600/20 dark:to-orange-600/5",
       borderColor: "border-amber-500/30 dark:border-amber-500/40"
     },
@@ -40,21 +40,20 @@ export default function InteractiveFeatureSection() {
   return (
     <section className="relative my-24 max-w-7xl mx-auto px-4 overflow-hidden text-slate-800 dark:text-slate-100">
       
-      {/* Background Ambient Glows - ডার্ক মোডে গ্লো করবে, লাইট মোডে ইনভিজিবল থাকবে */}
+      
       <div className="absolute top-1/4 -left-20 w-96 h-96 bg-purple-600/10 dark:bg-purple-600/10 rounded-full blur-[120px] pointer-events-none hidden dark:block" />
       <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-blue-600/10 dark:bg-blue-600/10 rounded-full blur-[120px] pointer-events-none hidden dark:block" />
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center relative z-10">
         
-        {/* LEFT COLUMN: INTERACTIVE CONTENT TEXT */}
         <div className="lg:col-span-5 space-y-6">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-blue-50 dark:bg-blue-500/10 border border-blue-100 dark:border-blue-500/20 rounded-full text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest">
             <Sparkles size={14} className="animate-spin-[duration:4s]" /> Next-Gen Platform
           </div>
           
-          <h2 className="text-4xl sm:text-5xl font-black tracking-tight leading-[1.1] text-slate-900 dark:text-white">
+          <h2 className="text-4xl sm:text-5xl font-bold tracking-tight leading-[1.1] text-slate-900 dark:text-white">
             We Redefined The <br />
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 dark:from-blue-400 dark:via-purple-400 dark:to-pink-400">
+            <span className="bg-clip-text text-transparent bg-linear-to-r from-blue-600 via-purple-600 to-pink-600 dark:from-blue-400 dark:via-purple-400 dark:to-pink-400">
               Fitness Experience.
             </span>
           </h2>
@@ -79,12 +78,6 @@ export default function InteractiveFeatureSection() {
             ))}
           </div>
 
-          <div className="pt-6">
-            <button className="group inline-flex items-center gap-2 px-6 py-3.5 bg-slate-900 hover:bg-slate-950 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-800 dark:border-slate-700 text-white font-medium rounded-2xl transition-all shadow-xl active:scale-[0.98]">
-              Explore Platform Features
-              <ArrowRight size={16} className="text-slate-400 group-hover:translate-x-1.5 transition-transform" />
-            </button>
-          </div>
         </div>
 
         {/* RIGHT COLUMN: DYNAMIC ANIMATED CARDS */}
@@ -96,19 +89,19 @@ export default function InteractiveFeatureSection() {
               <div
                 key={feat.id}
                 onMouseEnter={() => setActiveCard(feat.id)}
-                className={`group relative p-6 sm:p-8 rounded-3xl border transition-all duration-500 cursor-pointer flex flex-col sm:flex-row items-start gap-6 overflow-hidden ${
+                className={`group relative p-6 sm:p-8 rounded-xl border transition-all duration-500 cursor-pointer flex flex-col sm:flex-row items-start gap-6 overflow-hidden ${
                   isSelected
-                    ? `bg-gradient-to-br ${feat.bgGradient} ${feat.borderColor} shadow-xl dark:shadow-2xl dark:shadow-black/40 translate-x-2`
+                    ? `bg-linear-to-br ${feat.bgGradient} ${feat.borderColor} shadow-xl dark:shadow-2xl dark:shadow-black/40 translate-x-2`
                     : "bg-white dark:bg-slate-900/30 backdrop-blur-md border-slate-200 dark:border-slate-800/80 hover:border-slate-300 dark:hover:border-slate-700"
                 }`}
               >
                 {/* Active Indicator Line */}
-                <div className={`absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-blue-500 to-purple-500 transition-opacity duration-300 ${
+                <div className={`absolute top-0 left-0 w-1 h-full bg-linear-to-b from-blue-500 to-purple-500 transition-opacity duration-300 ${
                   isSelected ? "opacity-100" : "opacity-0"
                 }`} />
 
                 {/* Icon Box */}
-                <div className={`p-4 rounded-2xl border transition-all duration-300 flex-shrink-0 group-hover:scale-110 ${
+                <div className={`p-4 rounded-2xl border transition-all duration-300 shrink-0 group-hover:scale-110 ${
                   isSelected
                     ? "bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-700/60 shadow-sm"
                     : "bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800"
@@ -117,7 +110,7 @@ export default function InteractiveFeatureSection() {
                 </div>
 
                 {/* Text Content */}
-                <div className="space-y-2 flex-grow">
+                <div className="space-y-2 grow">
                   <div className="flex items-center justify-between gap-4">
                     <h3 className={`text-xl font-bold transition-colors duration-300 ${
                       isSelected 

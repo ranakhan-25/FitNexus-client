@@ -144,7 +144,7 @@ export default function RegisterPage() {
           </TextField>
 
           {/* IMAGE */}
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-2 relative">
             <Label className="text-sm font-medium">Profile Image</Label>
 
             <label className="flex items-center justify-between border rounded-lg px-3 py-2 cursor-pointer bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 transition">
@@ -168,7 +168,7 @@ export default function RegisterPage() {
                 width={10}
                 height={10}
                 alt="image"
-                className="w-20 h-20 object-cover rounded-full border mx-auto mt-2"
+                className="w-10 h-9.5 object-cover rounded border mt-2 absolute top-5"
               />
             )}
           </div>

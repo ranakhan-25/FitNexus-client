@@ -2,7 +2,7 @@
 import { getToken } from "@/components/service/getToken";
 import { authClient } from "@/lib/auth-client";
 import Image from "next/image";
-import React, { useState, useEffect } from "react"; // useEffect ইম্পোর্ট করা হয়েছে
+import React, { useState, useEffect } from "react";
 import {
   FaUser,
   FaEnvelope,
@@ -105,13 +105,13 @@ export default function ProfilePage() {
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 transition-colors duration-300 py-10 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto">
-        {/* প্রোফাইল হেডার কার্ড */}
+        
         <div className="relative bg-white dark:bg-slate-800 rounded-3xl shadow-xl overflow-hidden mb-8 border border-slate-100 dark:border-slate-700/50">
-          {/* ব্যাকগ্রাউন্ড ব্যানার গ্রাডিয়েন্ট */}
-          <div className="h-40 w-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500"></div>
+          
+          <div className="h-40 w-full bg-linear-to-r from-indigo-500 via-purple-500 to-pink-500"></div>
 
           <div className="relative px-6 pb-6 pt-0 sm:px-8 sm:pb-8 flex flex-col sm:flex-row items-center sm:items-end gap-6 -mt-16">
-            {/* অ্যাভাটার/ছবি */}
+            
             <div className="relative group w-32 h-32 rounded-2xl overflow-hidden border-4 border-white dark:border-slate-800 shadow-lg bg-slate-200">
               <Image
                 src={formData?.image || "/user.png"}
@@ -120,12 +120,10 @@ export default function ProfilePage() {
                 alt={formData?.name || "User"}
                 className="w-full h-full object-cover"
               />
-              <button className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center text-white transition-opacity duration-200">
+              {/* <button className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center text-white transition-opacity duration-200">
                 <FaCamera className="text-xl" />
-              </button>
+              </button> */}
             </div>
-
-            {/* নাম এবং প্রাইমারি ইনফো */}
             <div className="flex-1 text-center sm:text-left">
               <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-1">
                 <h1 className="text-3xl font-bold tracking-tight">
@@ -148,7 +146,6 @@ export default function ProfilePage() {
               </p>
             </div>
 
-            {/* অ্যাকশন বাটন */}
             <div className="w-full sm:w-auto mt-4 sm:mt-0">
               <button
                 onClick={() => setIsEditing(!isEditing)}
@@ -168,7 +165,7 @@ export default function ProfilePage() {
           </div>
         </div>
 
-        {/* মেইন কন্টেন্ট এরিয়া */}
+       
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         
           <div className="space-y-6">
@@ -232,7 +229,6 @@ export default function ProfilePage() {
           <div className="md:col-span-2">
             <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 sm:p-8 shadow-md border border-slate-100 dark:border-slate-700/50 h-full">
               {!isEditing ? (
-                // ভিউ মোড (View Mode)
                 <div>
                   <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
                     <FaUser className="text-indigo-500" /> Profile Information
@@ -273,7 +269,7 @@ export default function ProfilePage() {
                   </div>
                 </div>
               ) : (
-                // এডিট মোড (Edit Mode)
+               
                 <form onSubmit={handleUpdate} className="space-y-5">
                   <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
                     <FaEdit className="text-indigo-500" /> Modify Profile Details
