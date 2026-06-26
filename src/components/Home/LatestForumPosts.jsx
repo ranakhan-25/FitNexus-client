@@ -20,7 +20,10 @@ export default function LatestForumPosts() {
         const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:5000";
         const res = await fetch(`${serverUrl}/api/forum/latest`);
 
-        if (!res.ok) throw new Error("Failed to connect to server");
+        if (!res.ok) {
+          const errorData = await res.json().catch(() => ({}));
+          throw new Error(errorData.message || `Server responded with status: ${res.status}`);
+        }
 
         const data = await res.json();
 
@@ -30,7 +33,6 @@ export default function LatestForumPosts() {
           throw new Error(data.message || "Something went wrong");
         }
       } catch (err) {
-        console.error(err);
         toast.error(err.message || "Failed to load posts");
       } finally {
         setLoading(false);
